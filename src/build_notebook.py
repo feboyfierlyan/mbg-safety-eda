@@ -1,373 +1,270 @@
-"""Bangun notebook pengumpulan dari dataset yang telah dikurasi."""
+"""Membangun notebook EDA yang dapat dijalankan dari awal."""
 from pathlib import Path
-import json,textwrap,hashlib
+import textwrap
 import nbformat as nbf
-import pandas as pd
-import numpy as np
 
-ROOT=Path(__file__).resolve().parents[1]
-STEM='3224600051_Muhammad_Fierlyan_Irwandi_EDA'
-df=pd.read_csv(ROOT/'data/processed/mbg_laporan.csv')
-a=df[df.masuk_analisis_utama];y=a.jumlah_dilaporkan
-n=len(a);k=int(np.ceil(.1*n));share=y.nlargest(k).sum()/y.sum()*100
-sha=hashlib.sha256((ROOT/'data/processed/mbg_laporan.csv').read_bytes()).hexdigest()
-cells=[]
-def md(s):cells.append(nbf.v4.new_markdown_cell(textwrap.dedent(s).strip()))
-def code(s):cells.append(nbf.v4.new_code_cell(textwrap.dedent(s).strip()))
+ROOT = Path(__file__).resolve().parents[1]
+cells = []
+def md(s): cells.append(nbf.v4.new_markdown_cell(textwrap.dedent(s).strip()))
+def code(s): cells.append(nbf.v4.new_code_cell(textwrap.dedent(s).strip()))
 
-md(f'''
-<div style="border-top:5px solid #953b45;padding:28px;background:#f8f5f1;color:#172b3a">
-<p style="font-size:12px;letter-spacing:2px">CATATAN RISET EKSPLORATIF · MATERI 04</p>
-<h1 style="font-size:32px;line-height:1.2">MBG di Balik Angka Kasus</h1>
-<p style="font-size:20px">Mengapa menghitung laporan saja tidak cukup?</p>
-<p><b>Muhammad Fierlyan Irwandi · 3224600051</b><br>Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin<br>Teknik Komputer · Politeknik Elektronika Negeri Surabaya</p>
-<p>Snapshot data: 18 September 2026 · Versi kajian 2.0</p>
-</div>
+md('''
+# Belajar Lebih Lama, Nilai Lebih Tinggi?
+### EDA waktu belajar dan nilai akhir 649 siswa
+**Muhammad Fierlyan Irwandi · 3224600051**  
+Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin  
+Teknik Komputer · Politeknik Elektronika Negeri Surabaya
 
-## Abstrak
+**Pertanyaan sederhana:** apakah kelompok siswa yang belajar lebih lama juga memiliki rata-rata nilai lebih tinggi?
 
-Kajian ini mengeksplorasi laporan publik dugaan maupun kejadian keracunan yang dikaitkan dengan program Makan Bergizi Gratis (MBG). Sebanyak **419 entri** diekstraksi dari tabel Wikipedia versi tetap, kemudian dikurasi menjadi **374 entri analisis utama**. Unit observasi adalah blok laporan dalam tabel, bukan orang unik atau kejadian epidemiologis yang telah dideduplikasi. Median jumlah yang dilaporkan adalah **32 orang**, sedangkan rata-ratanya **97,75 orang**. Sebanyak **38 entri terbesar (10,16%) memuat 47,82%** dari penjumlahan angka pada subset utama. Pemeriksaan kepekaan menunjukkan pola konsentrasi tetap muncul setelah lima entri terbesar dikeluarkan. Temuan ini mendukung pelaporan frekuensi bersama skala dampak, tetapi tidak mengukur risiko keracunan per porsi maupun keberhasilan program secara keseluruhan.
+**Jawaban singkat:** ada kecenderungan tersebut dalam data ini, tetapi tidak naik pada setiap kategori. Kelompok 5–10 jam memiliki rata-rata 66,1; kelompok >10 jam 65,3. Ini perbandingan kelompok, bukan bukti bahwa durasi tertentu menyebabkan nilai tertentu.
 
-**Kata kunci:** MBG, EDA, keamanan pangan, kualitas data, konsentrasi laporan.
-
-**Status:** tugas perkuliahan berbentuk catatan riset eksploratif; belum ditelaah sejawat. Notebook ini tidak menyatakan seluruh laporan telah dikonfirmasi secara medis.
-
-**Menjalankan:** unduh paket repositori agar `data/` tersedia, buka notebook dari folder utama, lalu pilih **Restart Kernel and Run All Cells**. Semua output sudah tersimpan. Tidak diperlukan internet untuk menjalankan ulang dengan data lokal.
+Notebook disusun untuk tugas Materi 04: minimal 100 baris, `head`, `shape`, `info`, `describe`, minimal tiga grafik, fitur–target, dan lima insight. Ada **empat grafik**, masing-masing disertai cara membaca dan interpretasi.
 ''')
 md('''
-## 1. Pendahuluan dan pertanyaan penelitian
+## 1. Data yang digunakan
 
-MBG dekat dengan kehidupan siswa dan menjadi perdebatan publik ketika muncul laporan gangguan kesehatan. Pertanyaan kajian ini sederhana: **apakah jumlah laporan saja cukup untuk menggambarkan besarnya dampak yang dilaporkan?**
+Sumber: **Student Performance** oleh Paulo Cortez, UCI Machine Learning Repository, DOI [10.24432/C5TG7T](https://doi.org/10.24432/C5TG7T), lisensi CC BY 4.0. Data dihimpun melalui laporan sekolah dan kuesioner dari dua sekolah menengah di Portugal. Kita memakai **student-por.csv**, mata pelajaran Bahasa Portugis, sebanyak 649 baris; setiap baris mewakili satu catatan siswa dalam mata pelajaran tersebut.
 
-Konteks mutakhir: pada 15 September 2026, BGN menyatakan sedang menyiapkan aplikasi penilaian layanan MBG oleh kepala sekolah [2]. Isu transparansi dan kualitas pelaporan karena itu relevan untuk dianalisis. Pernyataan kebijakan tersebut hanya menjadi konteks, bukan variabel kausal dalam dataset.
+Dataset ini dirujuk pada publikasi **2008** dan diunduh pada **18 September 2026**. Tanggal unduh bukan tahun pengumpulan data. Ini data historis, bukan survei siswa Indonesia atau kondisi pendidikan terkini.
 
-Pertanyaan EDA:
-1. Berapa banyak entri yang dapat dianalisis setelah pemeriksaan kualitas?
-2. Seperti apa distribusi jumlah orang yang dilaporkan per entri?
-3. Apakah sebagian kecil entri memuat sebagian besar jumlah yang dilaporkan?
-4. Bagaimana sebaran laporan menurut waktu dan provinsi dalam daftar yang tersedia?
-5. Apa konsekuensinya untuk pemilihan fitur, target, dan pengumpulan data berikutnya?
-''')
-md('''
-## 2. Data dan metode
+File matematika tidak digabung karena sebagian siswa terdapat pada kedua mata pelajaran. Data mentah 33 kolom tetap disimpan; analisis memakai enam kolom agar fokus.
 
-### 2.1 Sumber dan unit observasi
+**Cara memahami variabel:**
+- `waktu_belajar`: kategori waktu belajar per minggu, sesuai label UCI; bukan jam persis atau durasi hasil pengukuran.
+- `nilai_periode1`, `nilai_periode2`, `nilai_akhir`: nilai asli G1, G2, G3 pada skala 0–20, dikali 5 agar tampil pada skala **0–100**. Contoh: 12 menjadi 60. Ini hanya penskalaan, bukan konversi standar kelulusan Indonesia.
+- `sekolah`: kode GP atau MS; `absensi`: jumlah ketidakhadiran menurut sumber. Keduanya disimpan sebagai konteks.
 
-Data bersumber dari tabel bagian MBG pada [Wikipedia, revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794), diperbarui 18 September 2026 pukul 04.19 UTC dan diakses pada hari yang sama. Tabel mengumpulkan rujukan pemberitaan; ini **sumber sekunder yang tidak lengkap**, bukan registri resmi BGN/BPOM. Tautan sumber per entri, snapshot HTML, dan teks sel asli tersedia dalam repositori.
-
-Satu baris dataset = **satu blok referensi pada tabel sumber**. Angka bersama untuk beberapa sekolah dihitung sekali. Angka terpisah untuk kelompok yang dicatat terpisah dalam blok dijumlahkan. Blok dengan beberapa tanggal tidak dimasukkan dalam analisis utama. Satu entri belum tentu satu insiden, dan beberapa entri masih mungkin merujuk kejadian yang berhubungan.
-
-### 2.2 Kurasi yang dapat diperiksa
-
-- Tabel mempunyai 825 baris HTML termasuk dua header. Parser menghasilkan 419 entri, bukan 823 kejadian.
-- Lima baris berupa subtotal, placeholder, atau kelanjutan tanpa angka/rujukan dikeluarkan dari ekstraksi.
-- Kata seperti “ratusan”, “puluhan”, batas `>100`, dan komponen tidak jelas tidak diubah menjadi angka pasti.
-- Tanggal yang hanya menyebut bulan tetap tidak memiliki tanggal harian; tidak diisi tanggal 1 secara otomatis.
-- Analisis utama mensyaratkan angka literal, satu tanggal dalam 6 Januari 2025–18 September 2026, URL artikel yang spesifik, dan tidak ada konflik sumber yang ditemukan.
-- Sebanyak 45 entri tetap disimpan untuk audit, tetapi tidak masuk subset utama.
-
-“Angka literal” berarti bentuk angka pada sumber dapat dibaca, **bukan** status terkonfirmasi. Audit manual terarah memeriksa beberapa entri besar dan rujukan bermasalah; sebagian besar sumber belum diperiksa satu per satu. Detail keputusan: `docs/AUDIT_SUMBER.md`.
+Label 2–5 dan 5–10 jam mengikuti kategori sumber; batas tepat 5 jam tidak diperbaiki sendiri karena jam individual tidak tersedia.
 ''')
 code('''
 from pathlib import Path
 import hashlib
 import json
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from IPython.display import display, Markdown
+from IPython.display import display
 
-pd.set_option("display.max_columns", 24)
-pd.set_option("display.max_colwidth", 75)
-pd.set_option("display.precision", 3)
-plt.rcParams.update({"font.family":"DejaVu Sans", "figure.dpi":110,
-                     "savefig.dpi":180, "axes.spines.top":False,
-                     "axes.spines.right":False, "axes.titleweight":"bold",
-                     "axes.labelcolor":"#25364a", "text.color":"#25364a"})
-INK, RED, BLUE, GREY = "#25364a", "#953b45", "#376882", "#87949e"
-FIG=Path("figures");FIG.mkdir(exist_ok=True)
+ROOT = Path.cwd()
+if not (ROOT / 'data/raw/student-por.csv').exists():
+    raise FileNotFoundError('Buka notebook dari folder utama repositori.')
+sys.path.insert(0, str(ROOT / 'src'))
+from prepare_data import LABELS, prepare
 
-def selesai(fig, filename, n_data, catatan=""):
-    fig.text(0.01,0.01,f"Sumber: tabel Wikipedia rev. 29876794 + kurasi | snapshot 18 Sep 2026 | n={n_data} entri\\n{catatan}",
-             fontsize=8,color="#5b6470")
-    fig.tight_layout(rect=(0,.065,1,1))
-    fig.savefig(FIG/filename,bbox_inches="tight",facecolor="white")
-    plt.show();plt.close(fig)
-''')
-code(f'''
-DATA=Path("data/processed/mbg_laporan.csv")
-assert DATA.exists(), "Unduh ZIP repositori agar CSV dan notebook berada dalam satu folder proyek."
-assert hashlib.sha256(DATA.read_bytes()).hexdigest()=="{sha}", "Versi CSV berubah; bangun ulang kajian."
-df=pd.read_csv(DATA,parse_dates=["tanggal"])
-utama=df.loc[df["masuk_analisis_utama"]].copy()
-utama["jumlah_dilaporkan"]=utama["jumlah_dilaporkan"].astype(int)
-y=utama["jumlah_dilaporkan"]
-print("Snapshot: 18 September 2026 | revisi 29876794")
-print("Entri tersedia:",len(df),"| analisis utama:",len(utama),"| dikeluarkan:",len(df)-len(utama))
+raw_path = ROOT / 'data/raw/student-por.csv'
+provenance = json.loads((ROOT / 'data/provenance.json').read_text())
+assert hashlib.sha256(raw_path.read_bytes()).hexdigest() == provenance['raw_sha256']
+raw = pd.read_csv(raw_path, sep=';')
+df = prepare(raw)
+FIG = ROOT / 'figures'
+FIG.mkdir(exist_ok=True)
+plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 11,
+                     'axes.spines.top': False, 'axes.spines.right': False,
+                     'axes.titleweight': 'bold', 'figure.dpi': 120,
+                     'savefig.dpi': 180, 'axes.labelcolor': '#253449',
+                     'text.color': '#253449', 'axes.edgecolor': '#b5bdc8'})
+BLUE, TEAL, GRAY = '#315f85', '#168278', '#abb8c6'
+def simpan(fig, nama):
+    fig.text(.07, .015, 'Sumber: UCI Student Performance (Cortez, 2008) • Bahasa Portugis • n = 649',
+             fontsize=8, color='#64748b')
+    fig.tight_layout(rect=[0, .06, 1, 1])
+    fig.savefig(FIG / nama, facecolor='white', bbox_inches='tight')
+    plt.show()
+    plt.close(fig)
+
+print('Data mentah:', raw.shape, '| Data analisis:', df.shape)
 ''')
 md('''
-## 3. Inspeksi awal dataset
-### 3.1 `head()` dan `shape`
-
-Kolom lengkap tetap disimpan. Untuk keterbacaan, pratinjau menampilkan variabel utama serta alasan kurasi. Tanggal 2024 yang muncul dalam sumber sengaja dipertahankan dalam tabel audit dan dikeluarkan dari analisis periode kajian.
+## 2. Pemeriksaan awal: head, shape, info, describe
+Lima baris pertama membantu mengenali isi kolom. Ukuran tabel menunjukkan jumlah siswa dan variabel. `info()` memeriksa tipe data dan nilai kosong; `describe()` merangkum angka serta kategori.
 ''')
 code('''
-kolom_tampil=["entry_id","tanggal","provinsi","kabupaten_kota","jumlah_raw",
-               "jumlah_dilaporkan","status_angka","masuk_analisis_utama"]
-display(df[kolom_tampil].head())
-print("Shape dataset penuh:",df.shape)
-print("Shape subset utama:",utama.shape)
-print("Provinsi tercantum:",df["provinsi"].nunique())
-''')
-md('''
-**Interpretasi:** 419 entri melampaui syarat tugas minimal 100 baris. Sebanyak 35 provinsi tercantum pada daftar, tetapi tidak adanya entri di provinsi lain tidak membuktikan tidak ada kejadian. Jumlah kolom mencakup identitas, sumber, dan penanda kualitas; semuanya tidak otomatis merupakan fitur model.
-
-### 3.2 `info()` dan `describe()`
-''')
-code('''
+display(df.head())
+print('shape:', df.shape)
 df.info()
-display(utama[["jumlah_dilaporkan","tahun","bulan"]].describe().T)
-display(df[["provinsi","status_angka","presisi_tanggal"]].describe(include="all").T)
+display(df.describe(include='all'))
 ''')
 md('''
-**Interpretasi:** target numerik memiliki rentang lebar, sehingga rata-rata perlu dibaca bersama median. Tahun dan bulan adalah penanda waktu; mean tahun bukan hasil substantif. Nilai kosong pada jumlah dan tanggal berasal dari keterbatasan pelaporan, sehingga tidak diimputasi dengan nol maupun mean.
-
-### 3.3 Missing value, duplikasi, dan kualitas
+**Interpretasi:** tabel analisis berisi 649 baris dan enam kolom. Nilai akhir memiliki rata-rata 59,53, median 60, dan rentang teramati 0–95 pada skala 0–100. Angka 100 tetap menjadi batas skala walaupun tidak muncul pada sampel. `NaN` pada tabel `describe(include='all')` berarti statistik itu tidak berlaku untuk jenis kolom tersebut, bukan otomatis data hilang.
 ''')
 code('''
-cek=["tanggal","jumlah_dilaporkan","source_url","provinsi","kabupaten_kota"]
-display(pd.DataFrame({"missing":df[cek].isna().sum(),"persen":df[cek].isna().mean()*100}))
-print("Duplikasi entry_id:",int(df["entry_id"].duplicated().sum()))
-kunci=["tanggal","provinsi","kabupaten_kota","jumlah_dilaporkan","source_url"]
-print("Duplikasi pada kunci peninjauan, subset utama:",int(utama.duplicated(kunci).sum()))
-display(df["status_angka"].value_counts().rename_axis("status_angka").to_frame("entri"))
-display(df.loc[~df["masuk_analisis_utama"],
-    ["entry_id","tanggal_raw","kabupaten_kota","jumlah_raw","alasan_eksklusi"]].head(10))
+cek = pd.DataFrame({'nilai_kosong': df.isna().sum(), 'jumlah_nilai_unik': df.nunique()})
+display(cek)
+print('Duplikat identik pada 33 kolom sumber:', int(raw.duplicated().sum()))
+print('Baris identik pada enam kolom terpilih:', int(df.duplicated().sum()))
+print('Jumlah nilai akhir nol:', int(df.nilai_akhir.eq(0).sum()))
+assert len(df) >= 100 and df.isna().sum().sum() == 0
+assert df[['nilai_periode1', 'nilai_periode2', 'nilai_akhir']].ge(0).all().all()
+assert df[['nilai_periode1', 'nilai_periode2', 'nilai_akhir']].le(100).all().all()
 ''')
 md('''
-**Interpretasi:** 28 entri tidak memiliki nilai jumlah yang dapat dijadikan angka tunggal dan tujuh tidak memiliki tanggal harian. Tidak ada ID ganda atau duplikasi pada kunci pemeriksaan subset utama. Namun, nol duplikasi teknis tidak menjamin nol tumpang tindih kejadian di dunia nyata. `Masalah_rujukan` dan `alasan_eksklusi` yang kosong berarti tidak diberi penanda tersebut, bukan data hilang yang perlu diimputasi.
-
-Audit menemukan contoh penting: entri 1.333 di Bandung Barat mencakup beberapa kejadian [3], dan entri Padang Panjang memiliki rujukan yang menunjuk Lampung Utara. Keduanya tidak masuk subset utama. Sel kosong pada kolom meninggal di tabel sumber tidak dianggap nol; kajian ini tidak menghitung kematian.
+Tidak ada nilai kosong atau duplikat identik pada data mentah. Kesamaan enam kolom terpilih tidak membuktikan dua baris adalah siswa yang sama, sehingga tidak dihapus. Sebanyak **15 nilai akhir nol** tetap dipertahankan: nol berada dalam rentang sah sumber, dan alasannya tidak diketahui. Tidak ada imputasi atau pembuangan outlier. Dengan demikian, semua 649 baris masuk analisis utama.
 ''')
 md('''
-## 4. Hasil dan visualisasi
-### Gambar 1. Mayoritas entri kecil, tetapi ekornya panjang
-**Pertanyaan:** mengapa rata-rata dan median berbeda jauh?
+## 3. Grafik 1 — Seperti apa sebaran nilai akhir?
+Sumbu horizontal adalah nilai akhir; tinggi batang menunjukkan banyaknya siswa pada rentang tersebut. Garis putus-putus menunjukkan median: setengah pengamatan berada di bawah atau sama dengan nilai tengah ini.
 ''')
 code('''
-fig,ax=plt.subplots(figsize=(9,4.8))
-ax.hist(y,bins=np.arange(0,851,25),color=BLUE,edgecolor="white")
-ax.axvline(y.median(),color=INK,ls="--",lw=2,label=f"Median: {y.median():.0f} orang")
-ax.axvline(y.mean(),color=RED,lw=2,label=f"Rata-rata: {y.mean():.2f} orang")
-ax.set(title="Median 32; rata-rata hampir 98 orang per entri",
-       xlabel="Jumlah orang yang dilaporkan per entri",ylabel="Frekuensi (entri)")
+fig, ax = plt.subplots(figsize=(9, 4.8))
+ax.hist(df.nilai_akhir, bins=np.arange(-2.5, 103, 5), color=BLUE, edgecolor='white')
+ax.axvline(df.nilai_akhir.median(), color=TEAL, ls='--', lw=2, label='Median = 60')
+ax.set(title='Nilai akhir siswa berpusat di sekitar 60',
+       xlabel='Nilai akhir (skala 0–100; nilai asli × 5)', ylabel='Jumlah siswa',
+       xlim=(-3, 103), xticks=range(0, 101, 10))
 ax.legend(frameon=False)
-selesai(fig,"01_distribusi.png",len(utama),"Lebar bin 25 orang. Angka laporan; bukan ukuran risiko per porsi.")
-display(y.agg(["count","mean","median","min","max"]).to_frame("nilai"))
+ax.grid(axis='y', alpha=.15)
+simpan(fig, '01_distribusi_nilai.png')
 ''')
 md('''
-**Interpretasi:** median 32 berarti separuh entri bernilai paling banyak 32 orang. Rata-rata 97,75 lebih dari tiga kali median karena beberapa laporan berangka besar menarik mean ke kanan. Skala entri yang tidak seragam turut memengaruhi perbedaan ini. Untuk target yang miring, median dan MAE layak menjadi pembanding jika pemodelan kelak dilakukan. Nilai besar tidak otomatis dibuang sebagai kesalahan.
-
-### Gambar 2. Sebagian kecil entri memuat hampir separuh jumlah
-**Pertanyaan:** berapa besar konsentrasi angka yang dilaporkan?
+**Interpretasi:** rata-rata 59,53 dekat dengan median 60. Kuartil bawah 50 dan kuartil atas 70 menunjukkan rentang tengah pengamatan. Sebagian nilai berada jauh lebih rendah, termasuk nol. Grafik ini mendeskripsikan nilai dalam sampel, bukan menentukan siapa yang lulus berdasarkan aturan Indonesia.
+''')
+md('''
+## 4. Grafik 2 — Berapa siswa dalam setiap kelompok belajar?
+Sebelum membandingkan nilai, periksa jumlah anggota kelompok. Rata-rata dari kelompok kecil lebih mudah berubah bila beberapa siswa ditambah atau dikeluarkan.
 ''')
 code('''
-urut=y.sort_values(ascending=False).reset_index(drop=True)
-k=int(np.ceil(.10*len(urut)))
-x_pct=np.arange(1,len(urut)+1)/len(urut)*100
-y_pct=urut.cumsum()/urut.sum()*100
-share_top=float(y_pct.iloc[k-1])
-fig,ax=plt.subplots(figsize=(9,5))
-ax.plot(np.r_[0,x_pct],np.r_[0,y_pct],color=RED,lw=2.8)
-ax.plot([0,100],[0,100],color=GREY,ls="--",label="Acuan jika semua entri sama besar")
-ax.scatter([x_pct[k-1]],[share_top],s=70,color=INK,zorder=5)
-ax.annotate(f"{k} entri ({x_pct[k-1]:.2f}%)\\nmemuat {share_top:.2f}% jumlah",
-            (x_pct[k-1],share_top),xytext=(30,30),textcoords="offset points",
-            fontsize=12,color=INK,arrowprops={"arrowstyle":"-","color":INK})
-ax.set(xlim=(0,100),ylim=(0,103),title="Sekitar 10% entri memuat hampir 48% jumlah yang dilaporkan",
-       xlabel="Porsi entri, diurutkan dari angka terbesar (%)",
-       ylabel="Porsi kumulatif jumlah yang dilaporkan (%)")
-ax.legend(frameon=False,loc="lower right")
-selesai(fig,"02_konsentrasi.png",len(utama),"Denominator: penjumlahan angka pada 374 entri, bukan total nasional orang unik.")
-print(f"{k}/{len(urut)} entri = {x_pct[k-1]:.2f}% | bagian jumlah = {share_top:.2f}%")
+ringkasan = df.groupby('waktu_belajar', observed=False)['nilai_akhir'].agg(
+    jumlah_siswa='size', rata_rata='mean', median='median', minimum='min', maksimum='max')
+ringkasan['persen_siswa'] = ringkasan.jumlah_siswa / len(df) * 100
+display(ringkasan.round(2))
+fig, ax = plt.subplots(figsize=(9, 4.8))
+bars = ax.bar(LABELS, ringkasan.jumlah_siswa, color=[GRAY, BLUE, GRAY, GRAY], width=.62)
+ax.bar_label(bars, labels=[f'{n} siswa' for n in ringkasan.jumlah_siswa], padding=5)
+ax.set(title='Kelompok 2–5 jam paling banyak: 305 siswa', xlabel='Waktu belajar per minggu (kategori UCI)',
+       ylabel='Jumlah siswa', ylim=(0, 365))
+ax.grid(axis='y', alpha=.15)
+ax.set_axisbelow(True)
+simpan(fig, '02_jumlah_kelompok.png')
 ''')
 md('''
-**Interpretasi:** 38 dari 374 entri memuat 47,82% dari jumlah yang dijumlahkan pada subset ini. Angka 38 merupakan pembulatan ke atas dari 10% ukuran sampel. Penghitungan satu entri sebagai satu laporan memberi bobot yang sama, padahal besaran angka yang dilaporkan sangat berbeda. Temuan ini mendukung penyajian jumlah laporan **bersama** jumlah orang per laporan. Ini bukan klaim bahwa 10% dapur menyebabkan 48% kasus nasional.
-
-### Gambar 3. Laporan besar muncul pada berbagai waktu
-**Pertanyaan:** apakah angka besar hanya tampak pada satu periode?
+**Interpretasi:** 305 siswa (47,0%) berada pada kategori 2–5 jam; kelompok >10 jam hanya 35 siswa (5,4%). Jadi, empat rata-rata berikut tidak memiliki ukuran kelompok yang sama. Kita tidak menafsirkan kelompok kecil sebagai standar bagi semua siswa.
+''')
+md('''
+## 5. Grafik 3 — Belajar lebih lama, nilai lebih tinggi?
+Ini grafik utama presentasi. Tinggi batang adalah **rata-rata nilai akhir**, bukan jumlah siswa. Semua batang dimulai dari nol agar selisih tidak tampak berlebihan. `n` menyatakan jumlah siswa pada kelompok.
 ''')
 code('''
-fig,ax=plt.subplots(figsize=(10,4.8))
-for yr,color in [(2025,BLUE),(2026,RED)]:
-    z=utama[utama["tahun"].eq(yr)]
-    ax.scatter(z["tanggal"],z["jumlah_dilaporkan"],s=23,alpha=.65,color=color,label=str(yr))
-ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
-ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%Y"))
-ax.set(title="Sebaran waktu memperlihatkan variasi skala laporan",
-       xlabel="Tanggal yang tercantum pada laporan (bulan/tahun)",
-       ylabel="Jumlah orang yang dilaporkan per entri")
-ax.legend(title="Tahun",frameon=False)
-selesai(fig,"03_waktu.png",len(utama),"Cakupan entri utama: 13 Jan 2025–16 Sep 2026. Cakupan pelaporan antarwaktu tidak seragam.")
+fig, ax = plt.subplots(figsize=(9, 5))
+bars = ax.bar(LABELS, ringkasan.rata_rata, color=[GRAY, BLUE, TEAL, BLUE], width=.62)
+for b, (_, row) in zip(bars, ringkasan.iterrows()):
+    ax.text(b.get_x()+b.get_width()/2, b.get_height()+2,
+            f"{row.rata_rata:.1f}".replace('.', ',') + f"\\n(n={int(row.jumlah_siswa)})",
+            ha='center', va='bottom', fontsize=11)
+ax.set(title='Rata-rata naik, tetapi tidak pada setiap kategori',
+       xlabel='Waktu belajar per minggu (kategori UCI)', ylabel='Rata-rata nilai akhir (skala 0–100)',
+       ylim=(0, 100), yticks=range(0, 101, 20))
+ax.grid(axis='y', alpha=.15)
+ax.set_axisbelow(True)
+simpan(fig, '03_belajar_dan_nilai.png')
 ''')
 md('''
-**Interpretasi:** laporan berangka besar muncul di 2025 dan 2026. Grafik ini memetakan entri yang tersedia, bukan laju insiden. Perubahan jumlah porsi, perluasan program, libur sekolah, perhatian media, dan keterlambatan pencatatan tidak dikendalikan. Karena 2026 hanya sampai September, membandingkan total dua tahun sebagai persentase kenaikan risiko akan menyesatkan.
+**Interpretasi:** rata-rata empat kelompok berturut-turut adalah **54,2; 60,5; 66,1; dan 65,3**. Selisih kelompok 5–10 jam dengan <2 jam adalah **11,9 poin**, bukan 11,9 persen. Kelompok >10 jam tidak memiliki rata-rata tertinggi; selisihnya dengan 5–10 jam hanya **0,8 poin**.
 
-### Gambar 4. Lokasi laporan tidak sama dengan peringkat risiko
-**Pertanyaan:** di mana jumlah pada entri yang tersedia terkonsentrasi?
+Ini **tidak membuktikan 5–10 jam adalah waktu optimal**, >10 jam merugikan, atau setiap siswa akan mendapat tambahan 11,9 poin dengan memperpanjang waktu belajar. Kemampuan awal, sekolah, dukungan belajar, dan faktor lain bisa berbeda. Kita hanya membandingkan kelompok yang sudah ada, tanpa eksperimen atau penyesuaian faktor tersebut.
+''')
+md('''
+## 6. Grafik 4 — Nilai sebelumnya dan nilai akhir
+Setiap titik menampilkan nilai periode kedua dan nilai akhir. Beberapa siswa memiliki pasangan nilai identik; **ukuran titik** menunjukkan banyaknya siswa pada pasangan itu. Garis diagonal menunjukkan nilai akhir sama dengan periode kedua; ini bukan garis model prediksi.
 ''')
 code('''
-prov=utama.groupby("provinsi")["jumlah_dilaporkan"].agg(jumlah="sum",entri="size")
-top=prov.nlargest(8,"jumlah").sort_values("jumlah")
-fig,ax=plt.subplots(figsize=(10,5.2))
-bars=ax.barh(top.index,top["jumlah"],color=BLUE)
-ax.bar_label(bars,labels=[f"{int(row.jumlah):,} · {int(row.entri)} entri" for row in top.itertuples()],padding=6,fontsize=10)
-ax.set_xlim(0,top["jumlah"].max()*1.30)
-ax.set(title="Delapan provinsi dengan penjumlahan angka laporan terbesar dalam subset",
-       xlabel="Penjumlahan jumlah yang dilaporkan (orang; belum dideduplikasi antarentri)",
-       ylabel="Provinsi pada entri")
-selesai(fig,"04_provinsi.png",len(utama),"Bukan peringkat keamanan: jumlah porsi/penerima per provinsi tidak tersedia.")
-display(top.sort_values("jumlah",ascending=False))
+pasangan = df.groupby(['nilai_periode2', 'nilai_akhir']).size().reset_index(name='n')
+r = df.nilai_periode2.corr(df.nilai_akhir)
+fig, ax = plt.subplots(figsize=(8, 5.4))
+ax.scatter(pasangan.nilai_periode2, pasangan.nilai_akhir, s=pasangan.n * 10,
+           alpha=.6, color=BLUE, edgecolors='white', linewidths=.5)
+ax.plot([0, 100], [0, 100], ls='--', color=TEAL, lw=1.5, label='Nilai akhir = nilai periode 2')
+for n in [1, 10, 30]:
+    ax.scatter([], [], s=n*10, alpha=.6, color=BLUE, label=f'{n} siswa pada pasangan nilai')
+ax.set(title=f'Nilai periode kedua berkaitan erat dengan nilai akhir (r = {r:.2f})',
+       xlabel='Nilai periode kedua (skala 0–100)', ylabel='Nilai akhir (skala 0–100)',
+       xlim=(-5, 105), ylim=(-5, 105))
+ax.legend(frameon=False, loc='upper left', fontsize=8)
+ax.grid(alpha=.15)
+simpan(fig, '04_nilai_sebelumnya.png')
 ''')
 md('''
-**Interpretasi:** Jawa Tengah memiliki penjumlahan angka tertinggi pada subset yang tersedia, diikuti Jawa Timur dan Jawa Barat. Ini dapat dipengaruhi skala program maupun cakupan media. Tanpa jumlah porsi yang dibagikan pada periode dan wilayah yang sama, provinsi tersebut tidak dapat dinyatakan lebih berisiko. Label jumlah entri disertakan agar pembaca tidak mencampur jumlah laporan dan jumlah orang.
-
-### Gambar 5. Apa yang disisihkan sebelum menarik kesimpulan?
-**Pertanyaan:** berapa entri yang tidak lolos aturan analisis utama?
+**Interpretasi:** korelasi Pearson sekitar **0,92** berarti siswa dengan nilai periode kedua lebih tinggi cenderung memiliki nilai akhir lebih tinggi. Angka 0,92 bukan akurasi 92% dan bukan bukti sebab-akibat. Kedua nilai berasal dari rangkaian penilaian mata pelajaran yang sama. Karena nilai periode kedua belum tersedia pada awal tahun, manfaatnya bergantung pada kapan prediksi ingin dibuat.
+''')
+md('''
+## 7. Pemeriksaan tambahan untuk pembaca riset
+Bagian ini tidak perlu dipresentasikan. Kita memeriksa apakah pola utama hanya muncul karena dua sekolah dicampur, serta apa yang terjadi jika nilai nol dikeluarkan sebagai skenario pembanding. Analisis utama tetap memakai seluruh data.
 ''')
 code('''
-# Tahap bersifat berurutan dan saling eksklusif, sehingga tidak menghitung entri dua kali.
-alasan=np.select([
-    df["status_angka"].ne("angka_literal"),
-    df["presisi_tanggal"].ne("tanggal"),
-    df["masalah_rujukan"].notna(),
-    ~df["masuk_analisis_utama"]
-], ["Angka tidak pasti / kosong","Tanggal tidak tunggal / tidak lengkap",
-    "Rujukan atau definisi bermasalah","Di luar periode kajian"],default="Masuk analisis utama")
-alur=pd.Series(alasan).value_counts()
-fig,ax=plt.subplots(figsize=(10,4.7))
-bars=ax.barh(alur.index[::-1],alur.values[::-1],
-             color=[BLUE if t=="Masuk analisis utama" else RED for t in alur.index[::-1]])
-ax.bar_label(bars,padding=6)
-ax.set_xlim(0,alur.max()*1.12)
-ax.set(title="419 entri tersedia; 374 lolos aturan analisis utama",
-       xlabel="Jumlah entri (kategori eksklusif)",ylabel="Hasil kurasi berurutan")
-selesai(fig,"05_kualitas_data.png",len(df),"Eksklusi bukan berarti laporan palsu; detail tetap disimpan untuk audit.")
-display(alur.to_frame("entri"))
+per_sekolah = df.groupby(['sekolah', 'waktu_belajar'], observed=False).nilai_akhir.agg(['size', 'mean'])
+tanpa_nol = df[df.nilai_akhir > 0].groupby('waktu_belajar', observed=False).nilai_akhir.agg(['size', 'mean'])
+display(per_sekolah.round(2))
+display(tanpa_nol.round(2).rename(columns={'size':'n_tanpa_nol', 'mean':'rata_rata_tanpa_nol'}))
 ''')
 md('''
-**Interpretasi:** 45 entri (10,74%) tidak masuk statistik utama. Menyimpan alasan eksklusi membuat keputusan analisis dapat ditinjau. Menganggap kata “ratusan” sebagai 100, atau nilai kosong sebagai nol, akan menciptakan ketepatan yang tidak diberikan sumber.
+Pada kedua sekolah, rata-rata kategori 5–10 jam tetap di atas <2 jam. Setelah 15 nilai nol dikeluarkan, rata-rata kategori <2 jam menjadi 56,3 dan 5–10 jam tetap 66,1. Pola deskriptif bertahan, tetapi ini belum mengendalikan semua faktor pembeda dan bukan uji kausal. Nilai nol tidak dihapus dari analisis utama hanya karena hasil menjadi lebih menarik.
 ''')
 md('''
-## 5. Uji kepekaan, bukan pembuktian kausal
+## 8. Fitur (X) dan target (y)
 
-Dua pembanding digunakan: mengeluarkan lima entri terbesar dari subset utama, serta memasukkan seluruh angka literal bertahun 2025–2026 meskipun aturan sumber/tanggal dilonggarkan. Skenario longgar sengaja memuat entri bermasalah untuk mengukur perubahan hasil, bukan untuk diutamakan.
+Contoh tujuan ML: **memperkirakan nilai akhir setelah nilai periode kedua tersedia**.
+- **Fitur X:** waktu belajar, nilai periode pertama, dan nilai periode kedua.
+- **Target y:** nilai akhir. Karena berbentuk angka, tugas ini dapat dirumuskan sebagai regresi.
+- Waktu belajar perlu diubah dari kategori menjadi representasi numerik, misalnya one-hot encoding. Kode kategori tidak boleh dianggap jam pasti.
+- `absensi` tidak dipakai sebagai fitur dalam contoh ini karena waktu rekapnya tidak jelas; memasukkan informasi yang baru tersedia setelah waktu prediksi berisiko membocorkan informasi masa depan.
+- Jika prediksi dibuat pada awal tahun, G1 dan G2 belum tersedia dan harus dikeluarkan. Data kuesioner juga perlu dipastikan tersedia sebelum waktu prediksi.
+
+Notebook ini **tidak melatih model**: fokus tugas adalah memahami data. Identifikasi X dan y bukan klaim bahwa model sudah layak dipakai. Pada pengembangan lanjut, tetapkan waktu prediksi, pisahkan data latih/uji sebelum mempelajari transformasi, dan bandingkan dengan prediksi sederhana menggunakan rata-rata data latih.
 ''')
 code('''
-def ringkas(s):
-    s=s.dropna();kk=int(np.ceil(.1*len(s)))
-    return {"n":len(s),"median":s.median(),"mean":s.mean(),
-            "top_n":kk,"porsi_top_persen":s.nlargest(kk).sum()/s.sum()*100}
-longgar=df.loc[df["status_angka"].eq("angka_literal") & df["tahun"].ge(2025),"jumlah_dilaporkan"]
-sens=pd.DataFrame({
-    "Utama":ringkas(y),
-    "Tanpa 5 terbesar":ringkas(y.sort_values().iloc[:-5]),
-    "Semua angka literal 2025–2026":ringkas(longgar)
-}).T
-display(sens.round(2))
-sens.to_csv("data/processed/sensitivitas.csv",index_label="skenario")
-''')
-md('''
-**Interpretasi:** porsi sekitar 10% entri terbesar adalah 47,82% pada analisis utama, 44,82% setelah lima terbesar dibuang, dan 48,37% pada skenario longgar. Konsentrasi tetap tampak. Ini adalah rentang hasil skenario, **bukan interval kepercayaan**. Bias pelaporan dan tumpang tindih kejadian tetap belum terselesaikan.
-
-## 6. Fitur dan target untuk konteks pembelajaran mesin
-
-Untuk memenuhi tugas, masalah supervisi hipotetisnya adalah memperkirakan **besar angka yang akan tercatat pada suatu entri laporan** dari konteks wilayah dan waktu. Ini bukan sistem untuk memprediksi apakah sebuah makanan aman.
-
-- **Fitur X:** `provinsi` (kategorikal), `tahun` dan `bulan` (penanda waktu). Fitur ini sangat terbatas dan mungkin menangkap pola pelaporan, bukan mekanisme keamanan pangan.
-- **Target y:** `jumlah_dilaporkan`, bilangan orang yang dicatat pada entri terpilih. Target berbentuk count, sehingga konteksnya regresi.
-- **Dilarang sebagai fitur:** `jumlah_raw`, kelas besar/kecil yang diturunkan dari y, urutan setelah pengurutan y, dan jumlah kematian. Itu berpotensi membocorkan target atau baru tersedia setelah kejadian.
-- **Bukan fitur:** ID, URL sumber, dan penanda kurasi. Tujuannya audit, bukan memberikan makna prediktif.
-''')
-code('''
-X=utama[["provinsi","tahun","bulan"]].copy()
-y_model=utama["jumlah_dilaporkan"].copy()
-print("X:",X.shape,"| y:",y_model.shape)
+fitur = ['waktu_belajar', 'nilai_periode1', 'nilai_periode2']
+target = 'nilai_akhir'
+X, y = df[fitur].copy(), df[target].copy()
+assert target not in X.columns
+print('Bentuk fitur X:', X.shape, '| Bentuk target y:', y.shape)
 display(X.head())
-assert len(X)==len(y_model)>=100
-assert "jumlah_dilaporkan" not in X.columns
-assert not X.isna().any().any()
+display(y.head())
 ''')
 md('''
-**Implikasi:** kategori provinsi perlu encoding. Split harus mempertimbangkan urutan waktu dan pengelompokan kejadian yang sama, lalu preprocessing dipelajari hanya pada data latih. Jangan random split begitu saja ketika beberapa laporan bisa merujuk kejadian terkait. Dataset ini belum memiliki ID kejadian yang andal, sehingga belum layak menjadi sistem prediksi operasional. Model sengaja tidak dilatih karena tugas berfokus pada EDA.
+## 9. Lima insight EDA
+1. **Sebanyak 305 dari 649 siswa (47,0%) belajar 2–5 jam per minggu**, sehingga kategori ini paling banyak terwakili.
+2. **Rata-rata nilai akhir adalah 59,5 dan median 60** pada skala tampilan 0–100.
+3. **Kelompok 5–10 jam memiliki rata-rata 66,1, dibanding 54,2 pada <2 jam**, selisih deskriptif 11,9 poin.
+4. **Kelompok >10 jam memiliki rata-rata 65,3 dan hanya 35 siswa**; durasi paling panjang tidak menghasilkan rata-rata tertinggi pada sampel ini.
+5. **Nilai periode kedua dan nilai akhir berkorelasi sekitar 0,92**, tetapi nilai sebelumnya hanya boleh menjadi fitur jika sudah tersedia saat prediksi.
 
-Data tambahan yang dibutuhkan untuk kajian risiko: jumlah porsi per dapur per hari, ID kejadian dan dapur, definisi kasus yang seragam, serta hasil konfirmasi dan pembaruan jumlah. Data operasional harus tersedia sebelum outcome jika kelak dipakai sebagai prediktor.
+## 10. Kesimpulan dan batasan
+**Jawaban penelitian:** kelompok belajar lebih lama cenderung memiliki rata-rata nilai lebih tinggi, tetapi pola tidak terus naik dan durasi bukan jaminan nilai individu. EDA membantu melihat pola serta pertanyaan yang masih perlu dijawab.
 
-## 7. Lima insight singkat
+Batas kajian: data historis dari dua sekolah dan satu mata pelajaran; waktu belajar berupa kategori kuesioner; jumlah siswa tiap kelompok berbeda; tidak ada eksperimen, pengendalian semua faktor pembeda, atau klaim generalisasi ke Indonesia. Kajian ini tidak menetapkan jumlah jam belajar ideal. Perbedaan 0,8 poin antar dua kategori teratas tidak diuji signifikansinya dan tidak diperlakukan sebagai bukti keunggulan.
 
-1. **Kualitas data mengubah sampel:** dari 419 entri tersedia, 374 lolos aturan analisis dan 45 disimpan sebagai catatan audit.
-2. **Mean bukan gambaran laporan tipikal:** median 32 orang jauh di bawah rata-rata 97,75 karena distribusi miring ke kanan.
-3. **Angka terkonsentrasi:** 38 entri terbesar (10,16%) memuat 47,82% penjumlahan jumlah yang dilaporkan dalam subset utama.
-4. **Laporan besar mendominasi penjumlahan:** 115 entri bernilai setidaknya 100 orang (30,75%) memuat 81,17% jumlah dalam subset ini.
-5. **Pola tidak bergantung hanya pada lima terbesar:** setelah kelimanya dikeluarkan, sekitar 10% entri terbesar yang tersisa masih memuat 44,82% jumlah.
+## Referensi dan reproduksi
+1. Cortez, P. (2008). *Student Performance* [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5TG7T. Diakses 18 September 2026. Lisensi CC BY 4.0.
+2. Cortez, P., & Silva, A. M. G. (2008). *Using Data Mining to Predict Secondary School Student Performance*. Studi pengantar yang ditautkan pada [halaman dataset UCI](https://archive.ics.uci.edu/dataset/320/student+performance).
+3. Sigit, R. *Materi 04: Python dan Data Exploration untuk Machine Learning*, instruksi tugas slide 22.
+
+Untuk menjalankan ulang: pasang `requirements.txt`, lalu jalankan `python src/prepare_data.py` dan `python jalankan_ulang.py` dari folder repositori. Semua data tersedia lokal; notebook tidak memerlukan koneksi internet. Rincian kolom dan perubahan tersedia di `docs/KAMUS_DATA.md` dan `data/provenance.json`.
 ''')
 code('''
-besar=y.ge(100)
-print(f"Entri >=100: {besar.sum()} ({besar.mean():.2%})")
-print(f"Bagian jumlah pada entri >=100: {y[besar].sum()/y.sum():.2%}")
+hasil = {
+    'jumlah_siswa': len(df), 'kolom_analisis': df.shape[1],
+    'mean_nilai_akhir': float(df.nilai_akhir.mean()),
+    'median_nilai_akhir': float(df.nilai_akhir.median()),
+    'nilai_nol': int(df.nilai_akhir.eq(0).sum()),
+    'r_periode2_akhir': float(r),
+    'selisih_5_10_dengan_kurang2': float(ringkasan.loc['5–10 jam', 'rata_rata'] - ringkasan.loc['<2 jam', 'rata_rata']),
+    'kelompok': ringkasan.reset_index().to_dict(orient='records'),
+}
+(ROOT/'data/processed/hasil_ringkas.json').write_text(json.dumps(hasil, indent=2, ensure_ascii=False)+'\\n')
+ringkasan.to_csv(ROOT/'data/processed/ringkasan_kelompok.csv')
+per_sekolah.to_csv(ROOT/'data/processed/ringkasan_per_sekolah.csv')
+tanpa_nol.to_csv(ROOT/'data/processed/sensitivitas_tanpa_nol.csv')
+print('Ringkasan, empat grafik, dan pemeriksaan tambahan tersimpan.')
 ''')
-md('''
-## 8. Diskusi, keterbatasan, dan kesimpulan
 
-**Pesan utama:** pelaporan keamanan program perlu menunjukkan frekuensi **dan** skala dampak. Dua entri sama-sama bernilai satu dalam hitungan laporan, tetapi dapat melibatkan jumlah orang yang jauh berbeda. Median, mean, dan distribusi membantu menghindari penyederhanaan itu.
-
-Lima batas pembacaan hasil:
-1. Daftar tidak lengkap dan dipengaruhi seleksi pemberitaan; sampel tidak acak.
-2. Satu entri bukan selalu satu kejadian. Deduplikasi kejadian/orang antarentri belum tersedia.
-3. Dugaan dan konfirmasi belum dapat dipisahkan secara konsisten. Angka dapat berubah setelah sumber diperbarui.
-4. Tidak ada denominator porsi atau penerima untuk periode/wilayah yang sesuai; risiko per porsi tidak dapat dihitung.
-5. Tidak ada kelompok pembanding tanpa MBG dan tidak ada rancangan kausal; manfaat, kerugian bersih, serta penyebab program tidak diestimasi.
-
-Kesimpulannya, subset terpilih memperlihatkan konsentrasi besaran laporan yang kuat. EDA ini memberi alasan untuk menampilkan skala dampak bersama jumlah laporan serta memperbaiki struktur data publik. Kajian tidak menetapkan provinsi paling berbahaya atau memutuskan keberhasilan/kegagalan MBG secara keseluruhan.
-
-## 9. Pemeriksaan instruksi tugas
-
-- [x] Dataset tabular minimal 100 baris: 419 entri, 374 pada analisis utama.
-- [x] `head()`, `shape`, `info()`, dan `describe()` beserta interpretasi.
-- [x] Minimal tiga visualisasi: lima grafik dengan label dan sumber.
-- [x] Identifikasi fitur X dan target y serta risiko kebocoran target.
-- [x] Lima insight singkat berbasis hasil hitungan.
-- [x] Nama file sesuai NIM dan nama mahasiswa.
-- [x] Naskah presentasi sekitar 2–2,5 menit ada pada `PRESENTASI_SINGKAT.md`.
-
-## Referensi
-
-[1] Kontributor Wikipedia. *Daftar kasus keracunan massal makan siang gratis*, bagian MBG. [Revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794), 18 September 2026. Adaptasi berlisensi CC BY-SA 4.0. Tautan artikel per entri tersimpan pada CSV/JSON sumber.
-
-[2] Badan Gizi Nasional. [BGN Siapkan Aplikasi Rating MBG, Sekolah Diminta Tak Segan Laporkan SPPG Bermasalah](https://www.bgn.go.id/news/siaran-pers/bgn-siapkan-aplikasi-rating-mbg-sekolah-diminta-tak-segan-laporkan-sppg-bermasalah), 15 September 2026. Konteks kebijakan, tidak dimasukkan ke perhitungan.
-
-[3] Kompas.com. [Update Korban Keracunan MBG di Bandung Barat Tembus 1.333 Orang](https://bandung.kompas.com/read/2025/09/25/165121378/update-korban-keracunan-mbg-di-bandung-barat-tembus-1333-orang), 25 September 2025. Digunakan untuk audit agregasi.
-
-[4] Badan Gizi Nasional. [BGN akan Memulai Program MBG Secara Bertahap](https://www.bgn.go.id/news/artikel/bgn-akan-memulai-program-mbg-secara-bertahap), 5 Januari 2025. Menyebut peluncuran nasional pada 6 Januari 2025.
-
-[5] Sigit, R. *Materi 04: Python dan Data Exploration untuk Machine Learning*. Materi kuliah PENS yang diberikan pengguna, khususnya slide 12–17, 20, dan 22.
-
-Seluruh tanggal akses sumber daring: 18 September 2026. Catatan pemeriksaan tambahan dan keterbatasan verifikasi ada pada `docs/AUDIT_SUMBER.md`.
-''')
-code('''
-hasil={"entri_total":len(df),"entri_utama":len(utama),"entri_dikeluarkan":len(df)-len(utama),
-       "median":float(y.median()),"mean":float(y.mean()),"jumlah_dalam_subset":int(y.sum()),
-       "top_n":k,"top_n_persen":float(k/len(y)*100),"top_share_persen":share_top,
-       "entri_min_100":int(besar.sum()),"entri_min_100_persen":float(besar.mean()*100),
-       "share_min_100_persen":float(y[besar].sum()/y.sum()*100),
-       "tanggal_min":str(utama.tanggal.min().date()),"tanggal_max":str(utama.tanggal.max().date()),
-       "catatan":"Statistik entri laporan terpilih; bukan estimasi nasional korban unik atau risiko."}
-Path("data/processed/hasil_ringkas.json").write_text(json.dumps(hasil,indent=2,ensure_ascii=False),encoding="utf-8")
-print("Selesai. Lima grafik dan seluruh hasil analisis tersimpan.")
-''')
-nb=nbf.v4.new_notebook(cells=cells)
-nb.metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},
-             'language_info':{'name':'python'},'authors':[{'name':'Muhammad Fierlyan Irwandi'}]}
-nbf.write(nb,ROOT/f'{STEM}.ipynb')
-print(f'Notebook dibuat: {len(cells)} sel; {sum(c.cell_type=="code" for c in cells)} sel kode.')
+nb = nbf.v4.new_notebook(cells=cells, metadata={
+    'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'},
+    'language_info': {'name':'python'},
+    'title': 'Belajar Lebih Lama, Nilai Lebih Tinggi?',
+    'authors': [{'name':'Muhammad Fierlyan Irwandi'}],
+})
+nbf.validate(nb)
+out = ROOT/'3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb'
+nbf.write(nb, out)
+print(out)

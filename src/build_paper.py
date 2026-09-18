@@ -1,101 +1,101 @@
-"""Bangun PDF ringkasan riset: python src/build_paper.py (lihat requirements-paper.txt)."""
+"""Bangun catatan riset tiga halaman setelah notebook selesai dijalankan."""
 from pathlib import Path
 import json
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.lib.colors import HexColor, white
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'MBG_Catatan_Riset.pdf'
-metrics=json.loads((ROOT/'data/processed/hasil_ringkas.json').read_text())
-assert metrics['entri_utama']==374 and round(metrics['top_share_persen'],2)==47.82
-INK=HexColor('#203345');RED=HexColor('#953b45');PALE=HexColor('#f3f1ec');LINE=HexColor('#d7dde0')
-styles=getSampleStyleSheet()
-styles.add(ParagraphStyle(name='TitleMBG',fontName='Times-Bold',fontSize=25,leading=28,textColor=INK,spaceAfter=7))
-styles.add(ParagraphStyle(name='SubMBG',fontName='Times-Roman',fontSize=14,leading=18,textColor=INK,spaceAfter=11))
-styles.add(ParagraphStyle(name='BodyMBG',fontName='Times-Roman',fontSize=10.5,leading=14.4,alignment=TA_JUSTIFY,spaceAfter=7))
-styles.add(ParagraphStyle(name='SectionMBG',fontName='Helvetica-Bold',fontSize=12,leading=16,textColor=RED,spaceBefore=10,spaceAfter=7))
-styles.add(ParagraphStyle(name='SmallMBG',fontName='Helvetica',fontSize=8.2,leading=11,textColor=INK,spaceAfter=5))
-styles.add(ParagraphStyle(name='CaptionMBG',fontName='Times-Italic',fontSize=9,leading=12,textColor=INK,spaceAfter=9))
-styles.add(ParagraphStyle(name='RefMBG',fontName='Times-Roman',fontSize=9,leading=12,spaceAfter=7,wordWrap='CJK'))
+ROOT = Path(__file__).resolve().parents[1]
+m = json.loads((ROOT/'data/processed/hasil_ringkas.json').read_text())
+assert m['jumlah_siswa'] == 649
+assert round(m['selisih_5_10_dengan_kurang2'], 1) == 11.9
+assert round(m['r_periode2_akhir'], 2) == .92
+INK, ACCENT, PALE, LINE = map(HexColor, ['#253449','#168278','#f1f5f6','#d2dbe0'])
+styles = getSampleStyleSheet()
+for name, font, size, leading, extra in [
+    ('TitleStudy','Times-Bold',25,28,{'textColor':INK,'spaceAfter':9}),
+    ('SubtitleStudy','Times-Roman',14,18,{'spaceAfter':10}),
+    ('BodyStudy','Times-Roman',10.5,14.3,{'alignment':TA_JUSTIFY,'spaceAfter':7}),
+    ('SectionStudy','Helvetica-Bold',12,16,{'textColor':ACCENT,'spaceBefore':9,'spaceAfter':7}),
+    ('SmallStudy','Helvetica',8.2,11.3,{'spaceAfter':6}),
+    ('CaptionStudy','Times-Italic',9,12,{'spaceAfter':8}),
+    ('RefStudy','Times-Roman',9,12,{'spaceAfter':7}),
+]:
+    styles.add(ParagraphStyle(name=name,fontName=font,fontSize=size,leading=leading,**extra))
 story=[]
-def p(text,style='BodyMBG'):story.append(Paragraph(text,styles[style]))
-def h(text):p(text,'SectionMBG')
-def fig(name,width=170*mm):
-    im=Image(str(ROOT/'figures'/name));im.drawHeight=width*im.imageHeight/im.imageWidth;im.drawWidth=width;story.append(im)
-def table(rows,widths):
-    t=Table([[Paragraph(str(v),styles['SmallMBG']) for v in row] for row in rows],colWidths=widths,hAlign='LEFT')
+def p(text, style='BodyStudy'): story.append(Paragraph(text, styles[style]))
+def h(text): p(text,'SectionStudy')
+def fig(name, width=155*mm):
+    im=Image(str(ROOT/'figures'/name)); im.drawHeight=width*im.imageHeight/im.imageWidth; im.drawWidth=width
+    story.append(im)
+def table(rows, widths):
+    t=Table([[Paragraph(str(x), styles['SmallStudy']) for x in row] for row in rows], colWidths=widths)
     t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),PALE),('LINEBELOW',(0,0),(-1,0),.7,LINE),
                           ('LINEBELOW',(0,-1),(-1,-1),.7,LINE),('VALIGN',(0,0),(-1,-1),'TOP'),
-                          ('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),5)]))
-    story.append(t);story.append(Spacer(1,7))
+                          ('TOPPADDING',(0,0),(-1,-1),6),('BOTTOMPADDING',(0,0),(-1,-1),4)]))
+    story.append(t);story.append(Spacer(1,6))
 def footer(canvas,doc):
     canvas.setStrokeColor(LINE);canvas.line(20*mm,17*mm,190*mm,17*mm)
     canvas.setFont('Helvetica',7.5);canvas.setFillColor(INK)
-    canvas.drawString(20*mm,12*mm,'MBG di Balik Angka Kasus | Catatan riset eksploratif | 18 September 2026')
+    canvas.drawString(20*mm,12*mm,'Waktu Belajar dan Nilai Akhir | Catatan riset eksploratif | Versi 3.0')
     canvas.drawRightString(190*mm,12*mm,str(doc.page))
 
-p('CATATAN RISET EKSPLORATIF - TUGAS MATERI 04','SmallMBG')
-p('MBG di Balik Angka Kasus','TitleMBG')
-p('Mengapa menghitung laporan saja tidak cukup?','SubMBG')
-p('<b>Muhammad Fierlyan Irwandi</b> | NIM 3224600051<br/>Teknik Komputer, Politeknik Elektronika Negeri Surabaya<br/>Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin','SmallMBG')
-p('Versi 2.0 | Snapshot 18 September 2026 | Belum ditelaah sejawat','SmallMBG')
+p('CATATAN RISET EKSPLORATIF - TUGAS MATERI 04','SmallStudy')
+p('Belajar Lebih Lama,<br/>Nilai Lebih Tinggi?','TitleStudy')
+p('Analisis eksploratif waktu belajar dan nilai akhir 649 siswa','SubtitleStudy')
+p('<b>Muhammad Fierlyan Irwandi</b> | NIM 3224600051<br/>Teknik Komputer, Politeknik Elektronika Negeri Surabaya<br/>Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin','SmallStudy')
+p('18 September 2026 | Data historis UCI | Catatan perkuliahan, belum ditelaah sejawat','SmallStudy')
 h('Abstrak')
-p('Kajian ini mengeksplorasi distribusi dan konsentrasi besaran laporan publik terkait dugaan maupun kejadian keracunan Makan Bergizi Gratis (MBG). Tabel Wikipedia versi tetap menghasilkan 419 entri yang dikurasi menjadi 374 entri analisis utama. Unit observasi adalah blok laporan dalam tabel, bukan orang unik atau kejadian epidemiologis yang telah dideduplikasi. Median jumlah yang dilaporkan adalah 32 orang dan rata-ratanya 97,75 orang. Sebanyak 38 entri terbesar (10,16%) memuat 47,82% penjumlahan angka pada subset utama. Pola konsentrasi tetap muncul pada dua skenario kepekaan. Hasil mendukung penyajian frekuensi bersama skala dampak. Kajian tidak mengestimasi risiko per porsi, total nasional korban unik, maupun efek kausal program.')
-p('<b>Kata kunci:</b> MBG; exploratory data analysis; keamanan pangan; kualitas data.','SmallMBG')
+p('Apakah kelompok siswa yang belajar lebih lama memiliki rata-rata nilai lebih tinggi? Kajian ini menggunakan 649 catatan siswa mata pelajaran Bahasa Portugis dari dua sekolah di Portugal pada dataset UCI Student Performance. Seluruh baris dipertahankan. Nilai asli 0-20 dikalikan lima untuk tampilan 0-100. Rata-rata empat kategori waktu belajar per minggu adalah 54,2; 60,5; 66,1; dan 65,3. Kategori terlama tidak memiliki rata-rata tertinggi. Pola selisih antara kategori 5-10 jam dan kurang dari 2 jam tetap terlihat ketika sekolah dianalisis terpisah dan nilai nol dikeluarkan sebagai skenario pembanding. Hasil bersifat deskriptif; tidak menetapkan jam belajar ideal atau membuktikan efek kausal.')
+p('<b>Kata kunci:</b> waktu belajar; prestasi siswa; exploratory data analysis; nilai akhir.','SmallStudy')
 h('1. Pendahuluan')
-p('Jumlah laporan sering menjadi ringkasan cepat persoalan keamanan pangan, tetapi setiap laporan dapat memuat skala yang berbeda. Pertanyaan kajian ini adalah seberapa beragam dan terkonsentrasi angka orang yang dilaporkan dalam entri publik terkait MBG. Isu pelaporan tetap aktual: BGN pada 15 September 2026 menyampaikan rencana aplikasi penilaian layanan oleh sekolah [2]. Informasi ini menjadi konteks, bukan penjelas kausal hasil.')
+p('Durasi belajar mudah dipahami, tetapi satu angka durasi belum tentu menjelaskan seluruh hasil belajar. Pertanyaan penelitian berfokus pada hubungan kategori waktu belajar mingguan dengan rata-rata nilai akhir. Analisis juga memeriksa jumlah siswa per kelompok, sebaran nilai, serta hubungan nilai periode kedua dengan nilai akhir. Tujuannya adalah memahami data sebelum mempertimbangkan model prediksi.')
 h('2. Data dan metode')
-p('Sumber adalah bagian MBG pada tabel Wikipedia revisi 29876794, diperbarui 18 September 2026 pukul 04.19 UTC [1]. Tautan rujukan per entri dan snapshot HTML dipertahankan. Satu entri didefinisikan sebagai satu blok referensi. Parser mengenali sel gabungan sehingga angka bersama untuk beberapa sekolah hanya dihitung sekali. Entri dapat tetap mencakup lebih dari satu kejadian atau tumpang tindih dengan entri lain.')
-p('Analisis utama mensyaratkan angka literal, satu tanggal harian dalam 6 Januari 2025-18 September 2026, URL artikel yang spesifik, dan tidak ada konflik yang ditemukan. Periode berawal dari peluncuran nasional [4]. Kata seperti "ratusan", batas numerik, serta angka kosong tidak diimputasi. Audit manual terarah dilakukan atas beberapa nilai besar dan rujukan bermasalah; seluruh artikel belum diverifikasi independen.')
-table([['Komponen','Jumlah / definisi'],['Entri tersedia','419 entri pada 35 provinsi tercantum'],['Subset utama','374 entri; 13 Jan 2025-16 Sep 2026'],['Dikeluarkan, tetap disimpan','45 entri (10,74%), beserta alasan eksklusi']], [70*mm,100*mm])
+p('Sumber adalah student-por.csv dari UCI [1], yang dikumpulkan melalui laporan sekolah dan kuesioner. Dataset berhubungan dengan studi tahun 2008 [2] dan diunduh pada 18 September 2026; tanggal unduh bukan tahun data. Tabel mentah memiliki 649 baris dan 33 kolom. Enam kolom dipilih: sekolah, kategori waktu belajar, absensi, dan tiga nilai periode. File matematika tidak digabung karena sebagian siswa muncul pada kedua mata pelajaran.')
+p('Empat kategori waktu belajar mengikuti sumber: &lt;2, 2-5, 5-10, dan &gt;10 jam per minggu. Kode kategori bukan jam pasti. Nilai G1, G2, G3 dikali lima sebagai penskalaan aritmetis, bukan penyetaraan standar nilai Indonesia. Tidak ada nilai kosong atau duplikat identik pada 33 kolom mentah. Sebanyak 15 nilai akhir nol dipertahankan karena berada dalam rentang sah sumber. Tidak ada imputasi atau penghapusan baris.')
+p('Statistik yang digunakan adalah frekuensi, rata-rata, median, rentang, dan korelasi Pearson untuk pasangan nilai. Visualisasi memakai histogram, diagram batang, dan scatter plot. Pemeriksaan tambahan dilakukan per sekolah dan tanpa nilai nol. Tidak dilakukan eksperimen, estimasi efek kausal, atau pengujian signifikansi perbedaan kelompok.')
 
 story.append(PageBreak())
-h('3. Hasil: distribusi dan konsentrasi')
-p('Median sebesar 32 jauh di bawah rata-rata 97,75 orang per entri. Distribusi miring ke kanan: sejumlah laporan berangka besar menarik mean ke atas. Nilai besar tidak otomatis dihapus sebagai outlier karena dapat merepresentasikan informasi substantif, walaupun ketidakseragaman skala pelaporan tetap menjadi batasan.')
-fig('01_distribusi.png',155*mm)
-p('<b>Gambar 1.</b> Distribusi jumlah orang yang dilaporkan pada 374 entri utama. Histogram memakai lebar bin 25 orang. Garis vertikal menunjukkan median dan mean.','CaptionMBG')
-p('Untuk mengukur konsentrasi, nilai diurutkan menurun. Dipilih k = ceil(0,10 x n), lalu porsi dihitung sebagai jumlah pada k entri terbesar dibagi penjumlahan pada seluruh subset. Dengan n = 374, k = 38 atau 10,16% entri. Kelompok ini memuat 47,82% jumlah yang dijumlahkan. Entri bernilai setidaknya 100 orang berjumlah 115 (30,75%) dan memuat 81,17% jumlah pada subset.')
-fig('02_konsentrasi.png',155*mm)
-p('<b>Gambar 2.</b> Kurva kumulatif dari entri terbesar ke terkecil. Denominator adalah penjumlahan angka laporan pada subset, bukan populasi penerima MBG. Porsi tersebut tidak boleh diterjemahkan menjadi persentase dapur atau insiden nasional.','CaptionMBG')
+h('3. Hasil')
+table([['Waktu belajar / minggu','Jumlah siswa','Rata-rata nilai','Median'],
+       ['<2 jam','212','54,2','55'],['2-5 jam','305','60,5','60'],
+       ['5-10 jam','97','66,1','65'],['>10 jam','35','65,3','65']],
+      [62*mm,36*mm,40*mm,32*mm])
+p('Rata-rata keseluruhan adalah 59,53 dan median 60; rentang teramati 0-95. Kelompok 2-5 jam paling banyak, yaitu 305 siswa (47,0%). Kelompok &gt;10 jam hanya mencakup 35 siswa (5,4%), sehingga rata-rata antar kategori berasal dari ukuran kelompok yang tidak sama.')
+fig('03_belajar_dan_nilai.png',170*mm)
+p('<b>Gambar 1.</b> Rata-rata nilai akhir berdasarkan kategori waktu belajar. Nilai 0-100 adalah nilai asli dikali lima; n adalah jumlah siswa. Sumbu vertikal dimulai dari nol. Batang menunjukkan ringkasan kelompok, bukan efek kausal.','CaptionStudy')
+p('Selisih rata-rata kategori 5-10 jam dengan &lt;2 jam adalah 11,9 poin. Kategori &gt;10 jam memiliki rata-rata 0,8 poin lebih rendah daripada 5-10 jam. Selisih kecil ini tidak ditafsirkan sebagai bukti durasi optimal atau kerugian akibat belajar lebih lama.')
+h('Hubungan dengan nilai sebelumnya')
+p('Korelasi Pearson nilai periode kedua dengan nilai akhir adalah 0,92. Siswa dengan nilai periode kedua lebih tinggi cenderung memiliki nilai akhir lebih tinggi. Keduanya berasal dari rangkaian penilaian mata pelajaran yang sama. Angka 0,92 adalah ukuran hubungan, bukan akurasi model sebesar 92%. Scatter plot lengkap tersedia dalam notebook bersama histogram nilai dan diagram jumlah siswa.')
+p('<b>Makna hasil:</b> rata-rata kelompok belajar memberi ringkasan yang berguna, tetapi ukuran kelompok dan riwayat nilai perlu dibaca bersama. Tinggi batang tidak menjelaskan hasil setiap individu dan tidak memberikan ukuran efek menambah satu jam belajar.')
 
 story.append(PageBreak())
-h('4. Sebaran wilayah dan pemeriksaan kepekaan')
-fig('04_provinsi.png')
-p('<b>Gambar 3.</b> Delapan provinsi dengan penjumlahan angka terbesar pada subset utama. Besaran ini mencerminkan catatan yang tersedia dan bukan peringkat keamanan; cakupan program dan pelaporan dapat berbeda antarwilayah.','CaptionMBG')
-p('Uji kepekaan membandingkan subset utama dengan dua skenario: membuang lima entri terbesar, serta melonggarkan aturan menjadi seluruh angka literal bertahun 2025-2026. Skenario longgar tetap mencakup entri bermasalah sehingga hanya dipakai sebagai pembanding, bukan estimasi alternatif yang diutamakan.')
-table([['Skenario','n','Median','Porsi sekitar 10% terbesar'],
-       ['Utama','374','32','47,82% (38 entri)'],
-       ['Tanpa lima terbesar','369','31','44,82% (37 entri)'],
-       ['Seluruh angka literal 2025-2026','387','33','48,37% (39 entri)']], [78*mm,17*mm,22*mm,53*mm])
-p('Konsentrasi tetap terlihat pada kedua pembanding. Rentang 44,82%-48,37% adalah hasil perubahan skenario, bukan interval kepercayaan. Tidak ada inferensi ke populasi nasional karena pengumpulan data tidak menggunakan sampel acak.')
-h('5. Diskusi dan implikasi untuk machine learning')
-p('Temuan memperlihatkan mengapa frekuensi perlu disajikan bersama skala dampak. Satu entri berbobot satu dalam hitungan laporan, tetapi angka orang di dalamnya dapat berbeda jauh. Statistik sederhana seperti median, mean, dan distribusi membantu pembaca memahami perbedaan itu sebelum menarik kesimpulan kebijakan.')
-p('Untuk tugas identifikasi fitur dan target, X hipotetis berisi provinsi, tahun, dan bulan; y adalah jumlah yang tercatat pada entri. Ini konteks regresi atas besaran laporan, bukan prediksi keamanan makanan. Variabel jumlah mentah dan kelas yang diturunkan dari y tidak boleh menjadi fitur. Pemodelan belum dilakukan. Data tambahan perlu mencakup ID kejadian, jumlah porsi per dapur dan tanggal, definisi kasus, serta pembaruan konfirmasi. Pembagian latih-uji harus memperhatikan waktu dan kelompok kejadian yang sama.')
-
-story.append(PageBreak())
-h('6. Audit sumber dan keterbatasan')
-p('Pemeriksaan manual menemukan bahwa angka 1.333 untuk Bandung Barat mengakumulasi beberapa kejadian [3]. Entri tersebut dikeluarkan karena meliputi beberapa tanggal. Entri 810 di Blora juga dikeluarkan karena sumber menyebut 444 bergejala tanpa definisi yang cukup jelas [5]. Angka 800 di Batang diperlakukan sebagai perkiraan karena laporan ANTARA memakai kata "sekitar" [6]. Pemeriksaan rujukan menemukan satu entri Padang Panjang yang menunjuk artikel Lampung Utara. Catatan rinci dan keputusan tersimpan pada audit sumber.')
-p('Terdapat lima batas utama. Pertama, daftar tidak lengkap dan dipengaruhi seleksi pemberitaan. Kedua, unit laporan tidak seragam dan orang/kejadian antarentri belum dideduplikasi. Ketiga, dugaan dan konfirmasi belum dipisahkan secara konsisten. Keempat, denominator porsi makan yang sesuai tidak tersedia. Kelima, tidak ada kelompok pembanding atau rancangan kausal. Karena itu, kajian tidak menyimpulkan risiko per porsi, provinsi paling berbahaya, maupun manfaat atau kerugian bersih program.')
-h('7. Kesimpulan dan reproduksi')
-p('Dalam subset yang dipilih, besaran laporan sangat tidak merata: sekitar sepuluh persen entri memuat hampir separuh jumlah yang dijumlahkan. Pola bertahan pada pemeriksaan kepekaan. Pelaporan MBG akan lebih informatif bila frekuensi disertai skala dampak dan definisi unit yang jelas.')
-p('Repositori menyimpan snapshot, CSV 419 entri, 45 eksklusi, kode parser, notebook dengan 14 sel kode terjalankan, lima grafik, dan pemeriksaan otomatis. Snapshot dan adaptasi data berlisensi CC BY-SA 4.0. Kode asli berlisensi MIT. Tautan proyek: <link href="https://github.com/feboyfierlyan/mbg-safety-eda" color="#953b45">github.com/feboyfierlyan/mbg-safety-eda</link>.')
+h('4. Pemeriksaan tambahan dan diskusi')
+p('Pada sekolah GP, rata-rata kategori &lt;2 jam adalah 57,6 dan kategori 5-10 jam 67,8. Pada sekolah MS, nilainya 49,8 dan 61,5. Arah selisih tetap sama ketika sekolah dipisahkan. Namun, pemeriksaan ini belum mengendalikan perbedaan kemampuan awal, dukungan belajar, ataupun faktor lain antar siswa.')
+p('Sebagai skenario tambahan, 15 nilai akhir nol dikeluarkan sehingga tersisa 634 siswa. Rata-rata kategori &lt;2 jam menjadi 56,3, sedangkan kategori 5-10 jam tetap 66,1. Pola selisih positif bertahan. Skenario ini tidak mengganti analisis utama: alasan nilai nol tidak diketahui dan menghapusnya tanpa dasar dapat menimbulkan bias.')
+p('Temuan utama menunjukkan pentingnya membedakan kecenderungan kelompok dengan kepastian individu. Durasi yang lebih panjang berkaitan dengan rata-rata yang lebih tinggi pada beberapa kategori, tetapi tidak terus meningkat. Data ini tidak dapat menjelaskan mengapa rata-rata dua kategori teratas berdekatan atau apakah perbedaannya mewakili populasi yang lebih luas.')
+h('5. Implikasi untuk machine learning')
+p('Contoh target adalah nilai akhir; fitur dapat berupa waktu belajar, nilai periode pertama, dan nilai periode kedua jika tujuan prediksi dilakukan setelah kedua nilai itu tersedia. Untuk prediksi pada awal tahun, nilai periode sebelumnya dalam tahun yang sama belum tersedia dan harus dikeluarkan. Waktu pengumpulan kuesioner juga perlu dipastikan sesuai dengan waktu prediksi. Absensi tidak dimasukkan ke contoh fitur karena waktu rekapnya belum jelas.')
+p('Korelasi tinggi antara nilai periode kedua dan nilai akhir masuk akal sebagai pola rangkaian penilaian pada mata pelajaran yang sama; ini tidak membuktikan bahwa model akan mencapai akurasi tertentu. Notebook tidak melatih model. Pengembangan berikutnya perlu menetapkan waktu prediksi, membagi data latih/uji, dan mengevaluasi kesalahan terhadap prediksi acuan sederhana.')
+h('6. Keterbatasan dan kesimpulan')
+p('Kajian memakai data historis dari dua sekolah dan satu mata pelajaran. Durasi merupakan kategori kuesioner, bukan pengukuran jam individual. Jumlah siswa per kelompok tidak sama, faktor pembeda belum dikendalikan, dan perbedaan kelompok tidak diuji signifikansinya. Hasil tidak digeneralisasi ke seluruh siswa atau mahasiswa Indonesia dan tidak menetapkan jam belajar ideal.')
+p('<b>Kesimpulan:</b> kelompok yang belajar lebih lama cenderung memiliki rata-rata nilai lebih tinggi, tetapi durasi terpanjang bukan rata-rata tertinggi pada sampel ini. Waktu belajar memberi petunjuk, sementara penjelasan hasil individu memerlukan informasi yang lebih lengkap.')
+h('Ketersediaan data dan reproduksi')
+p('Repositori memuat data sumber, data enam kolom, notebook dengan output, empat grafik, pemeriksaan otomatis, dan petunjuk menjalankan ulang. Dataset dan adaptasi berlisensi CC BY 4.0, kode asli MIT. Proyek: <link href="https://github.com/feboyfierlyan/student-study-eda" color="#168278">github.com/feboyfierlyan/student-study-eda</link>.','SmallStudy')
 h('Referensi')
-refs=[
-    '[1] Kontributor Wikipedia. Daftar kasus keracunan massal makan siang gratis, bagian MBG. Revisi 29876794, 18 September 2026. <link href="https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&amp;oldid=29876794" color="#953b45">Versi permanen</link>.',
-    '[2] Badan Gizi Nasional. BGN Siapkan Aplikasi Rating MBG, Sekolah Diminta Tak Segan Laporkan SPPG Bermasalah. 15 September 2026. <link href="https://www.bgn.go.id/news/siaran-pers/bgn-siapkan-aplikasi-rating-mbg-sekolah-diminta-tak-segan-laporkan-sppg-bermasalah" color="#953b45">Siaran pers</link>.',
-    '[3] Kompas.com. Update Korban Keracunan MBG di Bandung Barat Tembus 1.333 Orang. 25 September 2025. <link href="https://bandung.kompas.com/read/2025/09/25/165121378/update-korban-keracunan-mbg-di-bandung-barat-tembus-1333-orang" color="#953b45">Artikel sumber</link>.',
-    '[4] Badan Gizi Nasional. BGN akan Memulai Program MBG Secara Bertahap. 5 Januari 2025. <link href="https://www.bgn.go.id/news/artikel/bgn-akan-memulai-program-mbg-secara-bertahap" color="#953b45">Artikel BGN</link>.',
-    '[5] MuriaNews. Penyebab 810 Siswa Keracunan MBG, Dinkes Blora: Makanan Terkontaminasi. 9 Desember 2025. <link href="https://berita.murianews.com/zulkifli-fahmi/455559/penyebab-810-siswa-keracunan-mbg-dinkes-blora-makanan-terkontaminasi" color="#953b45">Artikel audit</link>.',
-    '[6] ANTARA Jateng. Ratusan siswa SMK Kandeman Batang keracunan masakan program MBG. 31 Oktober 2025. <link href="https://jateng.antaranews.com/amp/berita/606837/ratusan-siswa-smk-kandeman-batang-keracunan-masakan-program-mbg" color="#953b45">Artikel audit</link>.',
-    '[7] Sigit, R. Materi 04: Python dan Data Exploration untuk Machine Learning. Materi kuliah PENS; instruksi tugas pada slide 22.'
-]
-for r in refs:p(r,'RefMBG')
-p('Seluruh sumber daring diakses pada 18 September 2026. Ini catatan riset perkuliahan, bukan publikasi yang telah ditelaah sejawat.','SmallMBG')
-doc=SimpleDocTemplate(str(OUT),pagesize=A4,rightMargin=20*mm,leftMargin=20*mm,topMargin=18*mm,bottomMargin=22*mm,
-                     title='MBG di Balik Angka Kasus',author='Muhammad Fierlyan Irwandi',subject='EDA laporan publik MBG, snapshot 18 September 2026')
+for ref in [
+    '[1] Cortez, P. (2008). <i>Student Performance</i> [Dataset]. UCI Machine Learning Repository. <link href="https://doi.org/10.24432/C5TG7T" color="#168278">doi:10.24432/C5TG7T</link>. Diakses 18 September 2026. CC BY 4.0.',
+    '[2] Cortez, P., &amp; Silva, A. M. G. (2008). <i>Using Data Mining to Predict Secondary School Student Performance</i>. Studi pengantar yang ditautkan pada <link href="https://archive.ics.uci.edu/dataset/320/student+performance" color="#168278">halaman dataset UCI</link>.',
+    '[3] Sigit, R. <i>Materi 04: Python dan Data Exploration untuk Machine Learning</i>. Instruksi tugas perkuliahan pada slide 22.',
+]: p(ref,'RefStudy')
+
+out=ROOT/'Belajar_dan_Nilai_Catatan_Riset.pdf'
+doc=SimpleDocTemplate(str(out),pagesize=A4,leftMargin=20*mm,rightMargin=20*mm,
+                     topMargin=18*mm,bottomMargin=22*mm,
+                     title='Belajar Lebih Lama, Nilai Lebih Tinggi?',author='Muhammad Fierlyan Irwandi',
+                     subject='EDA waktu belajar dan nilai akhir 649 siswa')
 doc.build(story,onFirstPage=footer,onLaterPages=footer)
-print(OUT)
+print(out)

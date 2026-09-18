@@ -1,16 +1,18 @@
-# Validasi versi 2.0
+# Validasi versi 3.0
 
-Tanggal: 18 September 2026.
+Tanggal pemeriksaan: 18 September 2026.
 
-- Tabel sumber dikunci pada revisi 29876794; SHA-256 snapshot dan CSV tersimpan pada data/provenance.json.
-- Ekstraksi seluruh tabel menghasilkan 419 entri; 374 memenuhi aturan utama dan 45 memiliki alasan eksklusi.
-- Tiga pengujian otomatis lolos, mencakup angka ambigu, tanggal tidak lengkap, penggandaan rowspan, dan integritas subset.
-- Contoh kontrol: 33 santri yang mencakup dua sekolah tetap 33, bukan 66; tiga angka terpisah 87, 76, 43 menjadi 206.
-- Notebook valid sesuai nbformat v4; seluruh 14 sel kode dieksekusi berurutan dari kernel baru tanpa error.
-- Lima gambar PNG tertanam dalam notebook dan HTML. Judul, label, legenda, sumber, dan denominator diperiksa visual.
-- HTML tidak memerlukan script eksternal untuk menampilkan hasil; seluruh lima gambar tersimpan sebagai data inline dan memiliki teks alternatif.
-- PDF final terdiri atas empat halaman. Semua halaman dirender dan ditinjau; tidak ada caption yang terpisah ke halaman kosong atau elemen terpotong.
-- Naskah yang diucapkan berjumlah 242 kata, sekitar dua menit pada 120 kata/menit; target dengan jeda 2-2,5 menit. Durasi aktual belum direkam.
-- Tautan berkas hasil di README diperiksa dan seluruhnya tersedia.
+- Dataset mentah: 649 baris × 33 kolom; analisis: 649 baris × 6 kolom.
+- Nol nilai kosong dan nol duplikat identik pada seluruh kolom mentah.
+- Seluruh baris dipertahankan, termasuk 15 nilai akhir nol.
+- SHA-256 CSV sumber dan turunan tercatat dalam `data/provenance.json`.
+- Tiga pengujian otomatis lolos: integritas sumber, penskalaan ketiga nilai tanpa kehilangan nol/urutan, dan kategori waktu belajar beserta jumlah anggotanya.
+- Notebook valid menurut nbformat v4. Sepuluh sel kode dijalankan berurutan dari kernel baru tanpa error.
+- Empat grafik PNG tertanam dalam notebook dan HTML; HTML tidak membutuhkan script eksternal untuk membaca hasil dan memiliki empat teks alternatif gambar.
+- Semua grafik memiliki judul, satuan, label sumbu, dan sumber. Grafik utama mulai dari nol; ukuran kelompok dicantumkan.
+- Catatan riset PDF final terdiri dari tiga halaman yang dirender dan ditinjau secara visual.
+- Naskah yang diucapkan berjumlah 193 kata: sekitar 1,6 menit pada 120 kata/menit, dengan target sekitar dua menit termasuk jeda. Durasi aktual belum direkam.
+- Angka utama diperiksa konsistensinya pada notebook, grafik, README, PDF, dan naskah presentasi.
+- Tautan berkas lokal pada README tersedia.
 
-Batas validasi: pemeriksaan teknis dan audit sumber terarah tidak membuktikan seluruh laporan benar, lengkap, bebas tumpang tindih, atau terkonfirmasi medis. Status audit per entri disimpan dalam dataset.
+Pemeriksaan teknis ini tidak menjadikan data historis representatif untuk populasi lain dan tidak membuktikan hubungan sebab-akibat. Selisih rata-rata kelompok tidak diuji signifikansinya.

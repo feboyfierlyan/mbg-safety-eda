@@ -1,78 +1,74 @@
-# MBG di Balik Angka Kasus
+# Belajar Lebih Lama, Nilai Lebih Tinggi?
 
-### Mengapa menghitung laporan saja tidak cukup?
-
-**Catatan riset eksploratif · snapshot 18 September 2026 · versi 2.0**  
+**EDA waktu belajar dan nilai akhir 649 siswa**  
 Muhammad Fierlyan Irwandi · 3224600051  
-Teknik Komputer, Politeknik Elektronika Negeri Surabaya  
-Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin
+Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin · PENS
 
-> Pada **374 entri terpilih**, **38 entri terbesar (10,16%) memuat 47,82%** dari penjumlahan jumlah orang yang dilaporkan. Median **32**, rata-rata **97,75** orang per entri.
+> Rata-rata nilai naik dari **54,2** pada kelompok <2 jam menjadi **66,1** pada kelompok 5–10 jam. Namun, kelompok >10 jam memiliki rata-rata **65,3**. Belajar lebih lama berkaitan dengan nilai lebih tinggi pada beberapa kelompok, tetapi durasi terpanjang tidak otomatis menghasilkan rata-rata tertinggi.
 
-**Unit analisis adalah entri laporan publik, bukan orang unik, dapur, atau kejadian epidemiologis yang telah dideduplikasi. Angka di atas bukan estimasi nasional dan bukan risiko keracunan per porsi.**
+![Rata-rata nilai menurut waktu belajar per minggu](figures/03_belajar_dan_nilai.png)
 
-![Konsentrasi jumlah dalam entri laporan](figures/02_konsentrasi.png)
+**Skala nilai 0–100 adalah nilai asli 0–20 dikali 5. Ini perbandingan deskriptif, bukan bukti sebab-akibat atau penetapan jam belajar ideal.**
+
+## Mulai dari sini
+
+- **[Notebook tugas](3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb)** — kode, output, empat grafik, interpretasi, fitur–target, dan lima insight.
+- **[Versi HTML](3224600051_Muhammad_Fierlyan_Irwandi_EDA.html)** — unduh lalu buka di browser; grafik tertanam.
+- **[Catatan riset PDF](Belajar_dan_Nilai_Catatan_Riset.pdf)** — abstrak, metode, hasil, diskusi, keterbatasan, dan referensi.
+- **[Naskah presentasi singkat](PRESENTASI_SINGKAT.md)** — satu grafik utama, sekitar dua menit, dilengkapi jawaban tanya jawab.
+- **[Data analisis](data/processed/data_siswa.csv)** dan **[kamus data](docs/KAMUS_DATA.md)** — enam kolom yang mudah dipahami.
 
 ## Abstrak
 
-Kajian ini mengeksplorasi distribusi dan konsentrasi besaran laporan dugaan maupun kejadian keracunan yang dikaitkan dengan Makan Bergizi Gratis (MBG). Tabel Wikipedia versi tetap menghasilkan 419 entri yang menyertakan tautan rujukan dan teks sumber. Kurasi berbasis kejelasan angka, tanggal, dan rujukan menyisakan 374 entri untuk analisis utama. Distribusi miring ke kanan dan sebagian kecil entri memuat bagian besar dari penjumlahan angka. Pola tetap terlihat pada pemeriksaan kepekaan. Hasil mendukung pelaporan frekuensi bersama skala dampak, dengan keterbatasan seleksi media, ketidakseragaman unit laporan, dan ketiadaan denominator porsi makan.
+Kajian ini mengeksplorasi hubungan kategori waktu belajar mingguan dengan nilai akhir pada 649 siswa mata pelajaran Bahasa Portugis dari dua sekolah di Portugal. Data berasal dari UCI Student Performance; seluruh baris dipertahankan. Nilai asli diskalakan secara linier ke 0–100. Rata-rata nilai pada empat kategori waktu belajar berturut-turut adalah 54,2; 60,5; 66,1; dan 65,3. Kategori terlama tidak memiliki rata-rata tertinggi, tetapi selisih dua kategori teratas kecil dan jumlah anggotanya berbeda. Pemeriksaan per sekolah serta skenario tanpa nilai nol tetap menunjukkan selisih positif antara kategori 5–10 jam dan <2 jam. Hasil merupakan pola observasional; tidak menetapkan durasi belajar optimal atau efek kausal.
 
-Ini merupakan **tugas akademik berbentuk catatan riset**, bukan publikasi yang telah melalui telaah sejawat. Tidak ada model prediksi yang dilatih atau klaim kausal.
-
-## Baca hasil
-
-- **[Notebook pengumpulan](3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb)** — kode, output, lima grafik, interpretasi, fitur–target, dan lima insight.
-- **[HTML notebook](3224600051_Muhammad_Fierlyan_Irwandi_EDA.html)** — unduh dan buka di browser; gambar tertanam.
-- **[Catatan riset PDF](MBG_Catatan_Riset.pdf)** — ringkasan bergaya paper dengan metode, hasil, diskusi, dan referensi.
-- **[Presentasi sekitar 2–2,5 menit](PRESENTASI_SINGKAT.md)** — naskah langsung ke inti dan jawaban tanya jawab.
-- **[Dataset CSV](data/processed/mbg_laporan.csv)** — semua 419 entri, termasuk yang dikeluarkan.
-- **[Audit sumber](docs/AUDIT_SUMBER.md)** dan **[kamus data](docs/KAMUS_DATA.md)** — batas penggunaan dan keputusan kurasi.
+Ini **catatan riset perkuliahan**, bukan artikel yang telah ditelaah sejawat. Analisis tidak melatih model prediksi.
 
 ## Pertanyaan penelitian
 
-Seberapa beragam dan terkonsentrasi jumlah orang yang dilaporkan pada entri publik terkait keamanan pangan MBG? Apakah kesimpulannya berubah ketika entri besar atau aturan kurasi diubah?
+Apakah kelompok siswa yang belajar lebih lama memiliki rata-rata nilai akhir lebih tinggi?
 
-Konteks terbaru: [BGN pada 15 September 2026](https://www.bgn.go.id/news/siaran-pers/bgn-siapkan-aplikasi-rating-mbg-sekolah-diminta-tak-segan-laporkan-sppg-bermasalah) menyampaikan rencana aplikasi penilaian layanan oleh sekolah. Informasi itu digunakan sebagai konteks transparansi, bukan sebagai penjelas kausal hasil.
+Pertanyaan tambahan: seberapa banyak anggota setiap kelompok, bagaimana sebaran nilai, dan bagaimana hubungan nilai periode kedua dengan nilai akhir?
 
 ## Data dan metode
 
-Sumber: [Wikipedia, revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794), bagian MBG, diperbarui 18 September 2026 pukul 04.19 UTC. Revisi terbaru dipilih untuk kemutakhiran; penyimpanan versi tetap tidak berarti isinya telah diverifikasi sepenuhnya.
+Sumber primer: [Cortez (2008), Student Performance, UCI](https://doi.org/10.24432/C5TG7T). File yang dipakai adalah `student-por.csv`: **649 baris dan 33 kolom mentah**, diperoleh dari laporan sekolah dan kuesioner. Analisis memilih enam kolom dan mempertahankan semua siswa. Dataset historis ini diunduh pada **18 September 2026**; tanggal unduh bukan tahun data dan hasil tidak mewakili kondisi Indonesia saat ini.
 
-- **419 entri** berasal dari blok referensi, bukan dari penggandaan baris sekolah pada sel gabungan.
-- **374 entri utama**, bertanggal 13 Januari 2025–16 September 2026, memenuhi aturan angka literal, tanggal tunggal dalam periode kajian, dan rujukan spesifik tanpa konflik yang ditemukan.
-- **45 entri dikeluarkan** dari statistik utama, tetapi tetap tersedia beserta alasannya.
-- Kata “ratusan”, nilai kosong, perkiraan, dan batas numerik tidak diimputasi menjadi angka pasti.
-- Audit manual bersifat terarah dan tidak mencakup verifikasi independen seluruh artikel.
+1. Periksa bentuk tabel, nilai kosong, duplikat identik, dan rentang nilai.
+2. Petakan kode waktu belajar ke empat kategori sumber; kode 1–4 tidak dianggap sebagai jam pasti.
+3. Kalikan G1, G2, G3 dengan 5 agar skala tampilan menjadi 0–100; tidak mengubah urutan atau korelasi.
+4. Ringkas jumlah, rata-rata, median, dan sebaran; tampilkan histogram, diagram batang, dan scatter plot.
+5. Periksa pola per sekolah serta skenario tanpa nilai nol sebagai pelengkap, bukan pengganti analisis utama.
 
-**Transparansi audit:** sumber memuat sebuah entri 1.333 yang merangkum beberapa kejadian, rujukan salah lokasi, URL beranda tanpa artikel spesifik, dan tanggal 2024. Semua tetap dapat dilihat pada snapshot dan log; entri tersebut tidak dipakai untuk membesarkan temuan utama.
+Tidak ada nilai kosong atau duplikat identik pada seluruh kolom mentah. Sebanyak **15 nilai akhir nol tetap disertakan** karena berada dalam rentang sah; penyebabnya tidak diketahui. Tidak ada imputasi atau penghapusan outlier. File matematika tidak digabung agar siswa yang mengikuti dua mata pelajaran tidak dihitung ganda.
 
-## Hasil utama
+## Lima temuan
 
-1. **Kurasi:** 45 dari 419 entri (10,74%) tidak memenuhi aturan analisis utama.
-2. **Distribusi:** median 32 orang berbeda jauh dari mean 97,75 orang per entri.
-3. **Konsentrasi:** 38 entri terbesar (10,16%) memuat 47,82% jumlah pada subset.
-4. **Skala besar:** 115 entri dengan setidaknya 100 orang (30,75%) memuat 81,17% jumlah pada subset.
-5. **Kepekaan:** setelah lima terbesar dikeluarkan, sekitar 10% entri terbesar yang tersisa masih memuat 44,82% jumlah.
+1. Kategori **2–5 jam** mencakup **305 siswa (47,0%)**, kelompok terbesar.
+2. Rata-rata nilai akhir **59,5**, dengan median **60** pada skala tampilan 0–100.
+3. Kategori **5–10 jam** memiliki rata-rata **66,1**, dibanding **54,2** pada <2 jam: selisih **11,9 poin**, bukan persen.
+4. Kategori **>10 jam** memiliki rata-rata **65,3** dan hanya **35 siswa**; durasi terpanjang bukan rata-rata tertinggi pada sampel ini.
+5. Korelasi nilai periode kedua dengan nilai akhir **r = 0,92**; angka ini bukan akurasi model 92%.
 
-![Distribusi jumlah per entri](figures/01_distribusi.png)
+![Jumlah siswa menurut kelompok belajar](figures/02_jumlah_kelompok.png)
 
-Visualisasi tambahan: [sebaran waktu](figures/03_waktu.png), [sebaran provinsi](figures/04_provinsi.png), dan [alur kualitas data](figures/05_kualitas_data.png).
+Grafik lain: [distribusi nilai](figures/01_distribusi_nilai.png) dan [nilai periode kedua versus nilai akhir](figures/04_nilai_sebelumnya.png).
 
-## Interpretasi dan batasan
+## Diskusi dan keterbatasan
 
-Menghitung laporan saja menyamakan bobot entri yang berukuran kecil dan besar. Besaran per laporan perlu ditampilkan bersama frekuensi untuk memahami dampak yang tercatat.
+Rata-rata kelompok adalah ringkasan, bukan jaminan untuk individu. Perbedaan kemampuan awal, sekolah, dukungan belajar, dan faktor lain belum dikendalikan. Selisih 0,8 poin antara dua kategori teratas tidak diuji signifikansinya dan tidak membuktikan kelompok 5–10 jam lebih unggul atau belajar >10 jam merugikan.
 
-Daftar ini tidak lengkap, bukan sampel acak, dan belum melakukan deduplikasi orang atau kejadian lintas entri. Dugaan dan konfirmasi belum dibedakan secara konsisten. Data tidak menyediakan jumlah porsi per wilayah dan waktu, sehingga tidak menghasilkan probabilitas keracunan, peringkat keamanan provinsi, atau evaluasi manfaat-risiko program secara keseluruhan. **Jangan membagi jumlah pada kajian ini dengan penerima nasional dari tanggal berbeda.**
+Data berasal dari dua sekolah, satu mata pelajaran, dan periode historis. Durasi merupakan kategori kuesioner; jumlah siswa tiap kategori tidak sama. Kesimpulan tidak digeneralisasi ke semua siswa atau mahasiswa Indonesia.
 
-Untuk konteks ML, kandidat X berupa provinsi, tahun, dan bulan; y berupa jumlah yang tercatat pada entri. Prediktor tersebut mungkin mencerminkan pola pelaporan. Dataset belum layak digunakan sebagai sistem prediksi operasional.
+Dalam konteks ML, target adalah nilai akhir. Contoh fitur: waktu belajar, nilai periode pertama, dan kedua **jika tersedia saat prediksi**. Prediksi pada awal tahun harus mengeluarkan nilai periode yang belum terbit. Absensi tidak dimasukkan ke contoh fitur karena waktu rekapnya belum jelas.
 
 ## Reproduksi
 
-Lingkungan pengujian: Python 3.13.1. Paket dipatok di `requirements.txt`. Semua data untuk reproduksi tersedia lokal.
+Lingkungan yang diuji: Python 3.13.1. Versi paket tersimpan di `requirements.txt`. Setelah dependensi dipasang, analisis memakai data lokal dan tidak memerlukan internet.
 
 ```bash
-git clone https://github.com/feboyfierlyan/mbg-safety-eda.git
-cd mbg-safety-eda
+git clone https://github.com/feboyfierlyan/student-study-eda.git
+cd student-study-eda
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
@@ -82,34 +78,43 @@ python src/build_notebook.py
 python jalankan_ulang.py
 ```
 
-Pada Windows gunakan `.venv\Scripts\activate` untuk aktivasi. Skrip eksekusi memakai interpreter lingkungan aktif. `prepare_data.py` membaca snapshot yang disimpan, bukan halaman Wikipedia yang berubah setiap hari. Notebook memeriksa SHA-256 CSV. Skrip paper menggunakan dependensi tambahan pada `requirements-paper.txt`.
+Di Windows, aktivasi lingkungan dengan `.venv\Scripts\activate`. `jalankan_ulang.py` memakai interpreter lingkungan aktif, menjalankan notebook dari awal, lalu mengekspor HTML dengan gambar tertanam.
 
-## Struktur repositori
+Untuk membangun PDF setelah notebook dijalankan:
 
-```text
-data/raw/        Snapshot HTML dan hasil ekstraksi dengan referensi
-data/processed/  CSV, entri eksklusi, statistik dan sensitivitas
-data/provenance.json
-src/            Persiapan data dan pembangun notebook/paper
-tests/          Pemeriksaan parsing, sel gabungan, serta integritas data
-figures/        Lima grafik PNG
-docs/           Audit sumber, kamus data, dan validasi
+```bash
+python -m pip install -r requirements-paper.txt
+python src/build_paper.py
 ```
 
-## Rubrik tugas
+## Struktur
 
-- [x] Minimal 100 baris data.
+```text
+data/raw/         CSV asli UCI dan dokumentasi variabel
+data/processed/   Data enam kolom dan ringkasan analisis
+data/provenance.json
+figures/          Empat grafik PNG
+src/              Persiapan data, pembangun notebook, pembangun paper
+tests/            Pemeriksaan integritas, penskalaan, dan kategori
+docs/             Kamus data dan hasil validasi
+```
+
+## Pemenuhan tugas
+
+- [x] Dataset tabular minimal 100 baris: 649 siswa.
 - [x] `head`, `shape`, `info`, dan `describe`.
-- [x] Minimal tiga visualisasi; tersedia lima.
+- [x] Minimal tiga visualisasi: tersedia empat.
 - [x] Identifikasi fitur dan target.
-- [x] Lima insight beserta interpretasi.
-- [x] File NIM_Nama_EDA.ipynb dan versi HTML.
-- [x] Presentasi singkat, di bawah batas tiga menit pada kecepatan latihan yang disarankan.
+- [x] Lima insight singkat dan interpretasi grafik.
+- [x] Nama file `3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb` dan versi HTML.
+- [x] Naskah presentasi singkat untuk batas tiga menit.
 
-## Sumber, lisensi, dan sitasi
+## Referensi, lisensi, dan sitasi
 
-Kontributor Wikipedia. *Daftar kasus keracunan massal makan siang gratis*, [revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794). Diakses 18 September 2026. Snapshot dan adaptasi data berlisensi **CC BY-SA 4.0**, dengan atribusi dan perubahan didokumentasikan pada [DATA_LICENSE.md](DATA_LICENSE.md). Hak cipta artikel yang dirujuk tetap pada penerbitnya; isi penuh artikel tersebut tidak disalin ke repositori.
+1. Cortez, P. (2008). *Student Performance* [Dataset]. UCI Machine Learning Repository. [DOI: 10.24432/C5TG7T](https://doi.org/10.24432/C5TG7T). Lisensi **CC BY 4.0**.
+2. Cortez, P., & Silva, A. M. G. (2008). *Using Data Mining to Predict Secondary School Student Performance*. Studi pengantar pada [halaman UCI](https://archive.ics.uci.edu/dataset/320/student+performance).
+3. Sigit, R. *Materi 04: Python dan Data Exploration untuk Machine Learning*. Instruksi tugas slide 22.
 
-Kode Python asli berlisensi MIT. Untuk menyitir proyek ini gunakan metadata [CITATION.cff](CITATION.cff). Instruksi akademik mengacu pada materi Riyanto Sigit, *Materi 04: Python dan Data Exploration untuk Machine Learning*, slide 22.
+Kode Python asli berlisensi MIT. Data dan adaptasi berlisensi CC BY 4.0; lihat [DATA_LICENSE.md](DATA_LICENSE.md). Metadata proyek ada pada [CITATION.cff](CITATION.cff). Pemeriksaan hasil tercatat pada [docs/VALIDASI.md](docs/VALIDASI.md).
 
-Riwayat revisi: versi 2.0 menggantikan kajian Wine Quality dengan MBG. Riwayat versi sebelumnya tetap tersimpan di Git.
+Versi **3.0** mengganti topik sebelumnya dengan pendidikan agar pertanyaan, data, dan presentasi lebih mudah dipahami. Riwayat revisi terdahulu tetap tersimpan di Git; isi utama saat ini sepenuhnya kajian waktu belajar dan nilai.

@@ -1,24 +1,18 @@
-# Atribusi dan lisensi data serta dokumen
+# Lisensi dan atribusi
 
-Snapshot Wikipedia, adaptasi tabel, notebook naratif, grafik, dan catatan riset pada proyek ini tersedia dengan lisensi **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**.
+## Dataset
 
-Ringkasan lisensi: https://creativecommons.org/licenses/by-sa/4.0/  
-Teks legal: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+Cortez, P. (2008). **Student Performance** [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5TG7T
 
-## Atribusi sumber
+Sumber resmi: https://archive.ics.uci.edu/dataset/320/student+performance  
+Lisensi yang ditampilkan UCI: **Creative Commons Attribution 4.0 International**: https://creativecommons.org/licenses/by/4.0/
 
-Kontributor Wikipedia bahasa Indonesia. *Daftar kasus keracunan massal makan siang gratis*, bagian Makan Bergizi Gratis. Revisi **29876794**, 18 September 2026, 04.19 UTC.
+Salinan `data/raw/student-por.csv` dan `data/raw/student.txt` berasal dari paket unduhan resmi UCI, diakses 18 September 2026. CSV mentah tidak diubah. Hak pencipta sumber tetap pada pemiliknya; tidak ada dukungan atau pengesahan dari pencipta dataset terhadap kajian ini.
 
-Sumber permanen: https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794
+## Perubahan
 
-Riwayat kontributor: https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&action=history
+Data turunan memilih enam variabel, menerjemahkan nama kolom, memetakan kategori waktu belajar, dan mengalikan nilai G1/G2/G3 dengan 5. Seluruh 649 baris dipertahankan. Grafik, tabel ringkasan, dan pembahasan adalah adaptasi/analisis oleh Muhammad Fierlyan Irwandi (2026), juga tersedia dengan CC BY 4.0. Gunakan atribusi sumber dataset serta proyek ini ketika memakai ulang.
 
-Diakses dan disimpan: 18 September 2026. Snapshot HTML dipertahankan utuh. Tidak ada dukungan atau pengesahan proyek ini oleh Wikipedia, Wikimedia, BGN, maupun penerbit berita.
+## Kode
 
-## Perubahan oleh proyek
-
-Ekstraksi sel gabungan menjadi satu entri per blok referensi, normalisasi alias provinsi, parsing tanggal dan jumlah, penandaan nilai ambigu, audit rujukan terarah, pemilihan subset, statistik deskriptif, dan visualisasi. Teks sel serta sumber tetap tersedia untuk pemeriksaan. Daftar lengkap aturan ada pada `src/prepare_data.py` dan `docs/AUDIT_SUMBER.md`.
-
-Pengguna ulang wajib memberi atribusi, menautkan lisensi, menandai perubahan, dan membagikan adaptasi yang tercakup dengan lisensi yang sama. Lisensi ini tidak memberi hak atas isi penuh atau foto artikel berita yang hanya ditautkan. Hak penerbit masing-masing tetap berlaku.
-
-Kode Python asli dilisensikan terpisah dengan MIT pada file `LICENSE`.
+Kode Python asli dalam proyek berlisensi MIT, lihat `LICENSE`. Lisensi kode tidak mengganti lisensi data. Metadata sitasi proyek tersedia pada `CITATION.cff`.

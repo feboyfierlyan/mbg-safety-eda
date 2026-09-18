@@ -1,17 +1,47 @@
 {
-  "entri_total": 419,
-  "entri_utama": 374,
-  "entri_dikeluarkan": 45,
-  "median": 32.0,
-  "mean": 97.75133689839572,
-  "jumlah_dalam_subset": 36559,
-  "top_n": 38,
-  "top_n_persen": 10.16042780748663,
-  "top_share_persen": 47.8240652096611,
-  "entri_min_100": 115,
-  "entri_min_100_persen": 30.74866310160428,
-  "share_min_100_persen": 81.16742799310703,
-  "tanggal_min": "2025-01-13",
-  "tanggal_max": "2026-09-16",
-  "catatan": "Statistik entri laporan terpilih; bukan estimasi nasional korban unik atau risiko."
+  "jumlah_siswa": 649,
+  "kolom_analisis": 6,
+  "mean_nilai_akhir": 59.53004622496148,
+  "median_nilai_akhir": 60.0,
+  "nilai_nol": 15,
+  "r_periode2_akhir": 0.9185480035603512,
+  "selisih_5_10_dengan_kurang2": 11.91232250534916,
+  "kelompok": [
+    {
+      "waktu_belajar": "<2 jam",
+      "jumlah_siswa": 212,
+      "rata_rata": 54.221698113207545,
+      "median": 55.0,
+      "minimum": 0,
+      "maksimum": 90,
+      "persen_siswa": 32.66563944530046
+    },
+    {
+      "waktu_belajar": "2–5 jam",
+      "jumlah_siswa": 305,
+      "rata_rata": 60.459016393442624,
+      "median": 60.0,
+      "minimum": 0,
+      "maksimum": 95,
+      "persen_siswa": 46.99537750385208
+    },
+    {
+      "waktu_belajar": "5–10 jam",
+      "jumlah_siswa": 97,
+      "rata_rata": 66.1340206185567,
+      "median": 65.0,
+      "minimum": 40,
+      "maksimum": 90,
+      "persen_siswa": 14.946070878274268
+    },
+    {
+      "waktu_belajar": ">10 jam",
+      "jumlah_siswa": 35,
+      "rata_rata": 65.28571428571429,
+      "median": 65.0,
+      "minimum": 30,
+      "maksimum": 95,
+      "persen_siswa": 5.3929121725731894
+    }
+  ]
 }

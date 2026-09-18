@@ -1,38 +1,38 @@
-"""Pemeriksaan parsing untuk mencegah angka rekaan dan penggandaan rowspan."""
+"""Kontrol integritas dan transformasi yang memengaruhi interpretasi hasil."""
+from pathlib import Path
+import hashlib
+import json
 import sys
 import unittest
-from pathlib import Path
 import pandas as pd
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
-from prepare_data import parse_count, parse_dates, prepare
 
-class DataTests(unittest.TestCase):
-    def test_counts_do_not_invent_precision(self):
-        self.assertEqual(parse_count('1.333 Siswa'),(1333,'angka_literal'))
-        self.assertEqual(parse_count('11 Siswa + 1 Guru'),(12,'angka_literal'))
-        self.assertEqual(parse_count('48 Siswa, 9 Guru dan 1 Kepala Sekolah'),(58,'angka_literal'))
-        for value in ['Ratusan Siswa','>100 Siswa','± 7 siswa','77 Siswa + Guru','']:
-            self.assertIsNone(parse_count(value)[0],value)
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT/'src'))
+from prepare_data import prepare, LABELS
 
-    def test_incomplete_dates_stay_incomplete(self):
-        self.assertIsNone(parse_dates(['Agustus 2025'])[0])
-        self.assertEqual(parse_dates(['22 September 2025','24 September 2025'])[3],'beberapa_tanggal')
+class TestStudentData(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.raw = pd.read_csv(ROOT/'data/raw/student-por.csv', sep=';')
+        cls.df = prepare(cls.raw)
 
-    def test_snapshot_and_reference_blocks(self):
-        data=prepare();self.assertEqual(len(data),419)
-        self.assertEqual(data.entry_id.nunique(),419)
-        self.assertEqual(int(data.masuk_analisis_utama.sum()),374)
-        # 33 santri mencakup dua sekolah: tidak menjadi 66.
-        row=data.set_index('entry_id').loc['W29876794-r4c6']
-        self.assertEqual(row.jumlah_baris_html,2)
-        self.assertEqual(row.jumlah_dilaporkan,33)
-        # Angka terpisah pada tiga sekolah dijumlahkan hanya sekali.
-        row=data.set_index('entry_id').loc['W29876794-r132c6']
-        self.assertEqual(row.jumlah_dilaporkan,206)
-        main=data[data.masuk_analisis_utama]
-        self.assertTrue(main.jumlah_dilaporkan.notna().all())
-        self.assertTrue((pd.to_datetime(main.tanggal)>=pd.Timestamp('2025-01-06')).all())
-        self.assertFalse(main.masalah_rujukan.notna().any())
-        self.assertEqual(main.jumlah_dilaporkan.sum(),36559)
+    def test_source_and_rows(self):
+        p = json.loads((ROOT/'data/provenance.json').read_text())
+        self.assertEqual(hashlib.sha256((ROOT/'data/raw/student-por.csv').read_bytes()).hexdigest(), p['raw_sha256'])
+        self.assertEqual(self.df.shape, (649, 6))
+        self.assertEqual(int(self.raw.duplicated().sum()), 0)
+        self.assertEqual(int(self.df.isna().sum().sum()), 0)
 
-if __name__=='__main__':unittest.main()
+    def test_scaling_keeps_zeros_and_order(self):
+        for src, dest in [('G1','nilai_periode1'),('G2','nilai_periode2'),('G3','nilai_akhir')]:
+            pd.testing.assert_series_equal(self.df[dest]/5, self.raw[src].astype(float), check_names=False)
+        self.assertEqual(int(self.df.nilai_akhir.eq(0).sum()), 15)
+
+    def test_categories_are_not_hours(self):
+        self.assertEqual(list(self.df.waktu_belajar.cat.categories), LABELS)
+        self.assertEqual(self.df.waktu_belajar.value_counts(sort=False).tolist(), [212,305,97,35])
+        grouped = self.df.groupby('waktu_belajar', observed=False).nilai_akhir.mean()
+        self.assertAlmostEqual(grouped.iloc[2]-grouped.iloc[0], 11.912322504182, places=8)
+
+if __name__ == '__main__':
+    unittest.main()

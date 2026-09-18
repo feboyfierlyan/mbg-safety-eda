@@ -1,75 +1,82 @@
-# MBG di Balik Angka Kasus
+# Belajar Lebih Lama, Nilai Lebih Tinggi?
 
 **Muhammad Fierlyan Irwandi · 3224600051**  
-Target: sekitar **2–2,5 menit**, dengan jeda singkat. Gaya: tenang, tegas, berbicara kepada audiens. Jangan membaca semua angka di grafik.
+Target penyampaian: **sekitar 2 menit**, dengan jeda. Cukup tampilkan satu grafik: [rata-rata nilai tiap kelompok](figures/03_belajar_dan_nilai.png).
 
 ## Naskah yang diucapkan
 
-### 0:00–0:20 · Pembuka
+### Pembuka · 0:00–0:20
 
-Satu laporan MBG bisa menyebut puluhan orang. Laporan lain menyebut ratusan. Kalau kita hanya menghitung jumlah laporan, keduanya mendapat bobot yang sama: satu.
+Kalau ingin nilai lebih tinggi, kita sering mendengar satu saran: belajar lebih lama.
 
-Padahal, skala dampaknya berbeda jauh.
+Tapi apakah siswa yang belajar paling lama selalu mendapat nilai paling tinggi?
 
-Saya Fierlyan. Saya ingin melihat apa yang hilang ketika kita merangkum persoalan ini menjadi satu angka.
+Saya Fierlyan. Untuk menjawabnya, saya membandingkan waktu belajar dan nilai akhir 649 siswa.
 
-### 0:20–0:45 · Data dan keputusan
+### Data · 0:20–0:40
 
-Saya mengolah 419 entri laporan publik, dengan snapshot 18 September 2026. Setelah memeriksa angka, tanggal, dan rujukannya, 374 entri masuk analisis utama.
+Datanya berasal dari dua sekolah di Portugal, untuk mata pelajaran Bahasa Portugis. Ini data historis dari UCI, bukan survei siswa Indonesia.
 
-Kata “ratusan” tidak saya ubah menjadi seratus. Angka untuk beberapa sekolah juga tidak saya hitung berulang. Data yang ambigu tetap saya simpan untuk audit.
+Waktu belajar dibagi menjadi empat kelompok. Nilai saya tampilkan pada skala nol sampai seratus agar mudah dibaca.
 
-### 0:45–1:10 · Temuan pertama [tampilkan Gambar 1]
+### Temuan · 0:40–1:15
 
-Lihat perbedaan ini. Median jumlah yang dilaporkan adalah 32 orang. Tetapi rata-ratanya hampir 98.
+Perhatikan grafik ini.
 
-Mengapa? Karena beberapa laporan berangka besar menarik rata-rata ke atas. Jadi, hanya menyebut rata-rata juga belum cukup untuk menggambarkan laporan yang tipikal.
+Kelompok yang belajar kurang dari dua jam per minggu memiliki rata-rata nilai sekitar 54. Pada kelompok lima sampai sepuluh jam, rata-ratanya sekitar 66.
 
-### 1:10–1:40 · Temuan utama [tampilkan Gambar 2]
+Tetapi kelompok yang belajar lebih dari sepuluh jam justru rata-ratanya sekitar 65.
 
-Temuan paling menonjol ada di sini: sekitar sepuluh persen entri terbesar memuat hampir 48 persen dari jumlah orang yang dilaporkan dalam subset ini.
+Jadi, rata-rata cenderung naik, tetapi tidak terus naik pada setiap kelompok.
 
-Pola itu tetap terlihat ketika lima entri terbesar saya keluarkan.
+### Makna dan penutup · 1:15–2:00
 
-Artinya, frekuensi laporan dan besarnya dampak perlu dibaca bersama. Banyak laporan kecil dan beberapa laporan besar memberikan cerita yang berbeda.
+Apakah berarti lima sampai sepuluh jam adalah waktu belajar terbaik? Belum tentu.
 
-### 1:40–2:15 · Batas dan penutup
+Kelompok paling lama hanya berisi 35 siswa. Kemampuan awal dan kondisi belajar mereka juga bisa berbeda. Analisis ini menunjukkan hubungan, bukan membuktikan sebab-akibat.
 
-Ada batas penting: ini kumpulan laporan publik, bukan registri lengkap. Satu entri belum tentu satu kejadian. Saya juga tidak punya jumlah porsi makan sebagai pembanding, sehingga tidak menghitung peluang keracunan per porsi.
+Kesimpulannya: durasi belajar berkaitan dengan nilai, tetapi belum cukup untuk menjelaskan hasil setiap siswa.
 
-Kesimpulan saya sederhana. Pelaporan MBG perlu menjawab dua pertanyaan: berapa banyak laporan, dan seberapa besar dampaknya.
-
-Untuk program sebesar ini, kualitas keputusan dimulai dari kejelasan angka yang kita pakai.
+Durasi belajar memberi petunjuk. Untuk memahami hasil seorang siswa, kita tetap perlu melihat gambaran yang lebih lengkap.
 
 Terima kasih.
 
-## Petunjuk penyampaian
+## Cara membawakan
 
-- Jeda satu detik setelah kata **“satu”** pada pembuka.
-- Saat menyebut **32** dan **98**, tunjuk garis median dan mean pada histogram.
-- Perlambat kalimat **“sepuluh persen ... hampir 48 persen”**. Beri audiens waktu membaca grafik.
-- Tampilkan hanya dua grafik saat berbicara. Grafik provinsi dan waktu menjadi cadangan saat ditanya.
-- Latihan memakai timer. Penanda waktu adalah panduan, bukan hasil rekaman durasi aktual.
+- Setelah pertanyaan pembuka, berhenti satu detik dan lihat audiens.
+- Ketika menyebut 54, 66, dan 65, tunjuk batang yang sesuai. Angka boleh dibulatkan saat berbicara.
+- Ucapkan “belum tentu” dengan tenang, tanpa memberi kesan belajar lama itu sia-sia.
+- Jangan membaca definisi statistik atau seluruh tabel. Grafik lain menjadi cadangan.
+- Penanda waktu adalah panduan latihan. Rekam sekali dengan timer; durasi aktual bergantung tempo dan jeda.
 
-## Jawaban singkat untuk tanya jawab
+## Jawaban singkat jika ditanya
 
-**Apakah ini membuktikan MBG gagal?**  
-Tidak. Kajian ini menunjukkan pola besaran laporan yang tersedia. Evaluasi program memerlukan data manfaat, risiko, cakupan, dan pembanding yang sesuai.
+**Apa inti tugas ini?**  
+Membandingkan rata-rata nilai empat kelompok waktu belajar, lalu memeriksa apakah polanya terus meningkat.
 
-**Mengapa memakai Wikipedia?**  
-Sebagai indeks laporan yang bisa dibekukan versinya dan ditelusuri rujukannya. Saya menyimpan snapshot, tautan per entri, serta audit. Sumber ini memiliki keterbatasan dan belum diverifikasi seluruhnya.
+**Apa arti satu baris data?**  
+Satu catatan siswa pada mata pelajaran Bahasa Portugis; ada 649 baris dari dua sekolah.
 
-**Apa fitur dan targetnya?**  
-Fitur hipotetisnya provinsi, tahun, dan bulan. Targetnya jumlah yang tercatat pada entri laporan. Ini latihan identifikasi X dan y; belum menjadi model prediksi keamanan makanan.
+**Kenapa nilainya dikali lima?**  
+Nilai asli berskala 0–20. Mengalikan lima membuatnya 0–100, misalnya 12 menjadi 60. Ini hanya perubahan skala, bukan penyetaraan aturan kelulusan.
 
-**Mengapa 45 entri dikeluarkan?**  
-Angka atau tanggalnya tidak memenuhi aturan, rujukannya bermasalah, atau berada di luar periode. Entri tetap disimpan, sehingga keputusannya bisa diperiksa.
+**Jadi harus belajar lima sampai sepuluh jam?**  
+Data ini tidak bisa menetapkan jam ideal. Kita tidak melakukan eksperimen; perbedaan rata-rata bisa berkaitan dengan banyak faktor.
 
-**Apa beda kasus, laporan, dan orang?**  
-Dalam kajian ini, satu baris adalah entri laporan. Entri dapat mencakup beberapa sekolah atau kejadian. Angkanya menghitung orang yang dilaporkan pada entri itu; belum tentu orang unik jika beberapa entri saling terkait.
+**Kenapa lebih dari sepuluh jam tidak paling tinggi?**  
+Penyebabnya belum dapat ditentukan. Kelompok itu kecil, dan kemampuan maupun keadaan siswa bisa berbeda. Selisihnya juga hanya sekitar 0,8 poin dari kelompok 5–10 jam.
 
-**Apakah Jawa Tengah paling berbahaya?**  
-Tidak dapat disimpulkan. Angka laporan tidak memiliki pembagi jumlah porsi atau penerima yang sesuai untuk menghitung risiko.
+**Apa fitur dan target untuk ML?**  
+Targetnya nilai akhir. Contoh fitur: kategori waktu belajar serta nilai periode pertama dan kedua, jika prediksi dilakukan setelah kedua nilai itu tersedia. Pada awal tahun, nilai-nilai tersebut belum boleh dipakai.
+
+**Apa arti korelasi 0,92 pada grafik cadangan?**  
+Nilai periode kedua yang lebih tinggi cenderung diikuti nilai akhir lebih tinggi. Itu ukuran hubungan, bukan akurasi prediksi 92%.
+
+**Apakah nilai nol dibuang?**  
+Tidak. Ada 15 nilai nol dan semuanya dipertahankan karena sumber mengizinkan nilai 0–20. Penyebab nilai nol tidak dijelaskan.
+
+**Apakah ini berlaku untuk mahasiswa Indonesia?**  
+Belum tentu. Data historis berasal dari dua sekolah di Portugal dan satu mata pelajaran. Hasil hanya mendeskripsikan sampel ini.
 
 **Mengapa tidak membuat model?**  
-Tugas berfokus pada EDA. Data juga belum memiliki ID kejadian dan denominator yang memadai untuk sistem prediksi operasional yang dapat dipertanggungjawabkan.
+Tugas ini berfokus pada EDA. Memahami isi dan batas data perlu dilakukan sebelum memprediksi.

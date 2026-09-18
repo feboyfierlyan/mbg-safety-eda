@@ -1,17 +1,20 @@
 cff-version: 1.2.0
-message: "Jika menggunakan kode atau analisis ini, sitir proyek ini dan atribusikan pula dataset Wikipedia sesuai DATA_LICENSE.md."
-title: "MBG di Balik Angka Kasus: Mengapa Menghitung Laporan Saja Tidak Cukup?"
+message: "Jika menggunakan analisis ini, sitir proyek dan dataset UCI yang dirujuk."
+title: "Belajar Lebih Lama, Nilai Lebih Tinggi? EDA Waktu Belajar dan Nilai Akhir 649 Siswa"
 type: software
+version: 3.0.0
+date-released: 2026-09-18
 authors:
   - family-names: "Irwandi"
     given-names: "Muhammad Fierlyan"
-version: "2.0.0"
-date-released: "2026-09-18"
-url: "https://github.com/feboyfierlyan/mbg-safety-eda"
-repository-code: "https://github.com/feboyfierlyan/mbg-safety-eda"
-abstract: "Catatan riset eksploratif untuk tugas perkuliahan. Analisis distribusi dan konsentrasi pada 419 entri laporan publik MBG, dengan 374 entri utama. Bukan estimasi nasional atau model risiko per porsi."
-keywords:
-  - "MBG"
-  - "exploratory data analysis"
-  - "food safety reporting"
-  - "data quality"
+repository-code: "https://github.com/feboyfierlyan/student-study-eda"
+license: MIT
+references:
+  - type: data
+    title: "Student Performance"
+    authors:
+      - family-names: "Cortez"
+        given-names: "Paulo"
+    year: 2008
+    doi: "10.24432/C5TG7T"
+    url: "https://archive.ics.uci.edu/dataset/320/student+performance"

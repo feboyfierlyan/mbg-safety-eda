@@ -1,31 +1,31 @@
-# Kamus data dan definisi analitis
+# Kamus data dan keputusan analisis
 
-File utama: `data/processed/mbg_laporan.csv` (419 baris). Encoding UTF-8, delimiter koma. `jumlah_dilaporkan` boleh kosong. CSV menyimpan kedua kelompok, termasuk 45 entri yang tidak masuk analisis utama.
+Sumber: Cortez (2008), [Student Performance, UCI](https://doi.org/10.24432/C5TG7T), lisensi CC BY 4.0. File mentah `student-por.csv` dipisahkan dengan titik koma; file analisis memakai koma.
 
-- `entry_id`: identitas deterministik, berupa nomor revisi dan posisi sel referensi HTML. Bukan ID kejadian epidemiologis.
-- `tanggal_raw`: teks tanggal dari tabel, termasuk lebih dari satu tanggal jika ada.
-- `tanggal`: tanggal ISO ketika dapat dibaca. Untuk beberapa tanggal lengkap, berisi tanggal pertama dan diberi penanda `beberapa_tanggal`; entri tersebut dikeluarkan dari analisis utama. Untuk tanggal berbasis bulan/rentang saja, nilainya kosong.
-- `tahun`, `bulan`: penanda tahun dan bulan yang dapat dikenali dari sumber. Bulan/tahun saja tidak dijadikan tanggal harian buatan.
-- `presisi_tanggal`: tanggal, beberapa_tanggal, rentang, bulan, atau tidak_tersedia.
-- `provinsi`: nama provinsi; alias Aceh dan Kepulauan Bangka Belitung dinormalisasi.
-- `kabupaten_kota`: lokasi administratif sebagaimana tercantum. Tidak dianggap kode wilayah resmi yang telah divalidasi.
-- `lokasi_raw`: daftar sekolah/tempat dalam blok referensi, dipisahkan tanda `|`. Bukan hitungan sekolah aktual yang terstandar.
-- `jumlah_raw`: teks asli kolom Bergejala, dengan beberapa sel dipisahkan `|`.
-- `jumlah_dilaporkan`: angka atau jumlah komponen angka yang tertulis. Satuan orang dalam entri laporan, bukan orang unik nasional. Bentuk perkiraan yang dikenali tidak diubah menjadi angka analitis; untuk kasus Batang 800, angka dipertahankan untuk audit tetapi statusnya perkiraan.
-- `status_angka`: angka_literal, kualitatif, batas_bukan_angka_pasti, perkiraan, tidak_tersedia, perkiraan_terverifikasi, atau komponen_tidak_jelas. Angka literal tidak berarti telah dikonfirmasi secara medis.
-- `jumlah_baris_html`, `jumlah_sel_angka`: ukuran struktur tabel untuk audit parser; bukan proksi jumlah insiden atau jumlah sekolah sebenarnya.
-- `source_url`: URL pertama pada catatan kaki sumber; dapat kosong atau berupa beranda, sehingga perlu diperiksa.
-- `source_urls_json`: semua URL pada catatan kaki, termasuk tautan arsip jika tersedia.
-- `masalah_rujukan`: masalah yang ditemukan, atau kosong jika tidak ada masalah yang ditandai. Kosong tidak menjamin verifikasi penuh.
-- `status_audit`: hasil pemeriksaan manual terarah, atau belum_diperiksa_individual.
-- `masuk_analisis_utama`: boolean hasil aturan inklusi.
-- `alasan_eksklusi`: semua alasan yang ditemukan; satu entri dapat memiliki beberapa alasan. Grafik alur memakai tahap eksklusif agar tidak menghitung ulang entri yang sama.
-- `snapshot_revision`, `diakses_pada`: versi dan tanggal akses untuk reproduksi.
+Unit observasi: satu catatan siswa pada mata pelajaran Bahasa Portugis. Jumlah 649 baris, dua sekolah. Analisis memakai seluruh baris dan memilih enam kolom:
 
-## Rumus konsentrasi
+- **sekolah** ← `school`: GP atau MS; kategori, bukan urutan kualitas sekolah.
+- **waktu_belajar** ← `studytime`: 1 = <2 jam, 2 = 2–5 jam, 3 = 5–10 jam, 4 = >10 jam per minggu. Kategori berurutan, bukan jam pasti. Label mengikuti sumber; ambiguitas batas tepat 5 jam tidak diperbaiki tanpa data asli jam individual.
+- **absensi** ← `absences`: jumlah ketidakhadiran sekolah yang tercatat; dipertahankan sebagai konteks, bukan fitur prediksi dalam contoh karena waktu rekap belum jelas.
+- **nilai_periode1** ← `G1 × 5`: nilai periode pertama pada skala tampilan 0–100.
+- **nilai_periode2** ← `G2 × 5`: nilai periode kedua pada skala tampilan 0–100.
+- **nilai_akhir** ← `G3 × 5`: nilai akhir pada skala tampilan 0–100; target analisis.
 
-Urutkan nilai y menurun. Ambil `k = ceil(0,10 × n)`. Porsi terbesar adalah `100 × sum(y_terbesar_k) / sum(y_seluruh_subset)`. Karena pembulatan, 38 dari 374 entri adalah 10,16%, bukan tepat 10,00%.
+G1, G2, G3 semula berskala 0–20. Penskalaan linier tidak mengubah urutan siswa, bentuk relatif distribusi, atau korelasi. Ini bukan penyetaraan standar nilai Indonesia. Nol tidak dianggap data hilang. Angka di grafik memakai satu desimal, perhitungan tetap memakai presisi asli.
 
-## Penggunaan yang tidak didukung
+Tidak ada imputasi, penghapusan baris, atau penggabungan dengan `student-mat.csv`. Pada berkas analisis, dua siswa bisa memiliki enam nilai identik; hal itu tidak cukup untuk menyatakan duplikasi siswa. Pemeriksaan duplikat identik dilakukan atas seluruh 33 kolom mentah.
 
-Tidak menghitung risiko individu/per porsi, tidak menyatakan kematian dari sel kosong, tidak menyebut semua angka sebagai siswa, tidak menyetarakan entri dengan dapur, dan tidak menafsirkan hasil sebagai perbandingan kausal provinsi atau tahun.
+## Istilah statistik dalam bahasa sederhana
+
+- **Rata-rata:** jumlah seluruh nilai dibagi banyaknya siswa.
+- **Median:** nilai tengah setelah semua nilai diurutkan.
+- **n:** banyaknya siswa yang dihitung dalam kelompok.
+- **Selisih poin:** 66,1 dikurangi 54,2 adalah sekitar 11,9 poin; bukan kenaikan 11,9 persen.
+- **Korelasi Pearson:** ukuran hubungan linier antara dua angka, dari -1 sampai +1. Bukan persentase akurasi dan bukan bukti sebab-akibat.
+- **Analisis sensitivitas:** menghitung ulang setelah mengubah satu keputusan, untuk melihat apakah pola berubah. Bukan alasan menghilangkan data dari hasil utama.
+
+## Asal dan integritas
+
+Data mentah diunduh dari paket resmi UCI pada 18 September 2026. Salinan CSV dan dokumentasi variabel disimpan di `data/raw/`. DOI, URL unduh, langkah transformasi, serta SHA-256 berkas mentah dan turunan disimpan pada `data/provenance.json`.
+
+Dataset berhubungan dengan studi tahun 2008. Tanggal unduh tidak boleh dilabeli sebagai tahun pengumpulan atau bukti bahwa data mewakili kondisi pendidikan terkini. Informasi sumber yang belum tersedia, seperti sebab nilai nol atau jam belajar persis, tidak direka.
