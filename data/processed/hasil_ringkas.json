@@ -1,0 +1,17 @@
+{
+  "entri_total": 419,
+  "entri_utama": 374,
+  "entri_dikeluarkan": 45,
+  "median": 32.0,
+  "mean": 97.75133689839572,
+  "jumlah_dalam_subset": 36559,
+  "top_n": 38,
+  "top_n_persen": 10.16042780748663,
+  "top_share_persen": 47.8240652096611,
+  "entri_min_100": 115,
+  "entri_min_100_persen": 30.74866310160428,
+  "share_min_100_persen": 81.16742799310703,
+  "tanggal_min": "2025-01-13",
+  "tanggal_max": "2026-09-16",
+  "catatan": "Statistik entri laporan terpilih; bukan estimasi nasional korban unik atau risiko."
+}

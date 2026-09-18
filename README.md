@@ -1,92 +1,115 @@
-# EDA Wine Quality Merah
+# MBG di Balik Angka Kasus
 
-**Tugas mandiri Materi 04 — Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin**  
-Muhammad Fierlyan Irwandi · **3224600051**  
-Teknik Komputer · Politeknik Elektronika Negeri Surabaya
+### Mengapa menghitung laporan saja tidak cukup?
 
-Eksplorasi 1.599 catatan wine merah dari UCI untuk memahami distribusi skor kualitas, hubungan antarvariabel, serta keputusan yang perlu dipertimbangkan sebelum pemodelan.
+**Catatan riset eksploratif · snapshot 18 September 2026 · versi 2.0**  
+Muhammad Fierlyan Irwandi · 3224600051  
+Teknik Komputer, Politeknik Elektronika Negeri Surabaya  
+Pengantar Kecerdasan Artifisial dan Pembelajaran Mesin
 
-## Buka tugas
+> Pada **374 entri terpilih**, **38 entri terbesar (10,16%) memuat 47,82%** dari penjumlahan jumlah orang yang dilaporkan. Median **32**, rata-rata **97,75** orang per entri.
 
-- **[Notebook lengkap](3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb)** — kode, output, lima grafik, interpretasi, dan lima insight. File utama untuk dikumpulkan.
-- **[Versi HTML](3224600051_Muhammad_Fierlyan_Irwandi_EDA.html)** — unduh lalu buka di browser; grafik dan output tertanam sehingga dapat dibaca tanpa menjalankan Python.
-- **[Naskah presentasi 3 menit](PRESENTASI_3_MENIT.md)** — alur bertanda waktu dan persiapan tanya jawab.
+**Unit analisis adalah entri laporan publik, bukan orang unik, dapur, atau kejadian epidemiologis yang telah dideduplikasi. Angka di atas bukan estimasi nasional dan bukan risiko keracunan per porsi.**
 
-GitHub dapat menampilkan pratinjau notebook. Jika pratinjau gagal, unduh HTML melalui menu **Raw / Download raw file**, lalu buka secara lokal.
+![Konsentrasi jumlah dalam entri laporan](figures/02_konsentrasi.png)
 
-## Temuan utama
+## Abstrak
 
-1. Tidak ada missing value, tetapi terdapat 240 baris identik tambahan (15,01%).
-2. Skor kualitas 5–6 mendominasi 82,49% observasi.
-3. Alkohol berkorelasi positif dengan kualitas (Pearson r = 0,476).
-4. Keasaman volatil berkorelasi negatif dengan kualitas (r = −0,391).
-5. Aturan IQR menandai 155 nilai gula residual (9,69%) sebagai kandidat outlier.
+Kajian ini mengeksplorasi distribusi dan konsentrasi besaran laporan dugaan maupun kejadian keracunan yang dikaitkan dengan Makan Bergizi Gratis (MBG). Tabel Wikipedia versi tetap menghasilkan 419 entri yang menyertakan tautan rujukan dan teks sumber. Kurasi berbasis kejelasan angka, tanggal, dan rujukan menyisakan 374 entri untuk analisis utama. Distribusi miring ke kanan dan sebagian kecil entri memuat bagian besar dari penjumlahan angka. Pola tetap terlihat pada pemeriksaan kepekaan. Hasil mendukung pelaporan frekuensi bersama skala dampak, dengan keterbatasan seleksi media, ketidakseragaman unit laporan, dan ketiadaan denominator porsi makan.
 
-![Distribusi skor kualitas](figures/02_distribusi_quality.png)
+Ini merupakan **tugas akademik berbentuk catatan riset**, bukan publikasi yang telah melalui telaah sejawat. Tidak ada model prediksi yang dilatih atau klaim kausal.
 
-![Alkohol menurut skor kualitas](figures/03_boxplot_alcohol_quality.png)
+## Baca hasil
 
-## Ruang lingkup dan keputusan
+- **[Notebook pengumpulan](3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb)** — kode, output, lima grafik, interpretasi, fitur–target, dan lima insight.
+- **[HTML notebook](3224600051_Muhammad_Fierlyan_Irwandi_EDA.html)** — unduh dan buka di browser; gambar tertanam.
+- **[Catatan riset PDF](MBG_Catatan_Riset.pdf)** — ringkasan bergaya paper dengan metode, hasil, diskusi, dan referensi.
+- **[Presentasi sekitar 2–2,5 menit](PRESENTASI_SINGKAT.md)** — naskah langsung ke inti dan jawaban tanya jawab.
+- **[Dataset CSV](data/processed/mbg_laporan.csv)** — semua 419 entri, termasuk yang dikeluarkan.
+- **[Audit sumber](docs/AUDIT_SUMBER.md)** dan **[kamus data](docs/KAMUS_DATA.md)** — batas penggunaan dan keputusan kurasi.
 
-Analisis utama mempertahankan **1.599 baris asli**. Baris identik dan nilai ekstrem tidak otomatis dihapus. Sebagai pemeriksaan, analisis dengan 1.359 baris unik menghasilkan korelasi alkohol sebesar 0,480 dan keasaman volatil sebesar −0,395, serupa dengan data asli.
+## Pertanyaan penelitian
 
-Sebelas pengukuran fisikokimia digunakan sebagai kandidat fitur `X`, sedangkan skor ordinal `quality` menjadi target `y`. Target tidak dimasukkan ke fitur. Tidak ada model yang dilatih atau klaim akurasi prediksi. Korelasi bersifat asosiasi, bukan bukti kausal.
+Seberapa beragam dan terkonsentrasi jumlah orang yang dilaporkan pada entri publik terkait keamanan pangan MBG? Apakah kesimpulannya berubah ketika entri besar atau aturan kurasi diubah?
 
-## Kesesuaian dengan instruksi slide 22
+Konteks terbaru: [BGN pada 15 September 2026](https://www.bgn.go.id/news/siaran-pers/bgn-siapkan-aplikasi-rating-mbg-sekolah-diminta-tak-segan-laporkan-sppg-bermasalah) menyampaikan rencana aplikasi penilaian layanan oleh sekolah. Informasi itu digunakan sebagai konteks transparansi, bukan sebagai penjelas kausal hasil.
 
-- [x] Dataset tabular minimal 100 baris → 1.599 baris.
-- [x] `head`, `shape`, `info`, `describe` → bagian 3 notebook.
-- [x] Minimal tiga visualisasi → lima grafik pada bagian 5.
-- [x] Identifikasi fitur dan target → bagian 6.
-- [x] Lima insight singkat → bagian 8.
-- [x] Interpretasi menyertai output → seluruh bagian analisis.
-- [x] Nama file mengikuti `NIM_Nama_EDA.ipynb`.
-- [x] Siap dipresentasikan 3 menit → naskah dan lampiran notebook.
+## Data dan metode
 
-## Menjalankan ulang
+Sumber: [Wikipedia, revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794), bagian MBG, diperbarui 18 September 2026 pukul 04.19 UTC. Revisi terbaru dipilih untuk kemutakhiran; penyimpanan versi tetap tidak berarti isinya telah diverifikasi sepenuhnya.
 
-Notebook dan HTML sudah memuat output. Menjalankan ulang bersifat opsional.
+- **419 entri** berasal dari blok referensi, bukan dari penggandaan baris sekolah pada sel gabungan.
+- **374 entri utama**, bertanggal 13 Januari 2025–16 September 2026, memenuhi aturan angka literal, tanggal tunggal dalam periode kajian, dan rujukan spesifik tanpa konflik yang ditemukan.
+- **45 entri dikeluarkan** dari statistik utama, tetapi tetap tersedia beserta alasannya.
+- Kata “ratusan”, nilai kosong, perkiraan, dan batas numerik tidak diimputasi menjadi angka pasti.
+- Audit manual bersifat terarah dan tidak mencakup verifikasi independen seluruh artikel.
 
-Lingkungan yang digunakan: **Python 3.13.1**. Versi paket utama tercantum pada `requirements.txt`. Jalankan perintah berikut dari folder proyek:
+**Transparansi audit:** sumber memuat sebuah entri 1.333 yang merangkum beberapa kejadian, rujukan salah lokasi, URL beranda tanpa artikel spesifik, dan tanggal 2024. Semua tetap dapat dilihat pada snapshot dan log; entri tersebut tidak dipakai untuk membesarkan temuan utama.
+
+## Hasil utama
+
+1. **Kurasi:** 45 dari 419 entri (10,74%) tidak memenuhi aturan analisis utama.
+2. **Distribusi:** median 32 orang berbeda jauh dari mean 97,75 orang per entri.
+3. **Konsentrasi:** 38 entri terbesar (10,16%) memuat 47,82% jumlah pada subset.
+4. **Skala besar:** 115 entri dengan setidaknya 100 orang (30,75%) memuat 81,17% jumlah pada subset.
+5. **Kepekaan:** setelah lima terbesar dikeluarkan, sekitar 10% entri terbesar yang tersisa masih memuat 44,82% jumlah.
+
+![Distribusi jumlah per entri](figures/01_distribusi.png)
+
+Visualisasi tambahan: [sebaran waktu](figures/03_waktu.png), [sebaran provinsi](figures/04_provinsi.png), dan [alur kualitas data](figures/05_kualitas_data.png).
+
+## Interpretasi dan batasan
+
+Menghitung laporan saja menyamakan bobot entri yang berukuran kecil dan besar. Besaran per laporan perlu ditampilkan bersama frekuensi untuk memahami dampak yang tercatat.
+
+Daftar ini tidak lengkap, bukan sampel acak, dan belum melakukan deduplikasi orang atau kejadian lintas entri. Dugaan dan konfirmasi belum dibedakan secara konsisten. Data tidak menyediakan jumlah porsi per wilayah dan waktu, sehingga tidak menghasilkan probabilitas keracunan, peringkat keamanan provinsi, atau evaluasi manfaat-risiko program secara keseluruhan. **Jangan membagi jumlah pada kajian ini dengan penerima nasional dari tanggal berbeda.**
+
+Untuk konteks ML, kandidat X berupa provinsi, tahun, dan bulan; y berupa jumlah yang tercatat pada entri. Prediktor tersebut mungkin mencerminkan pola pelaporan. Dataset belum layak digunakan sebagai sistem prediksi operasional.
+
+## Reproduksi
+
+Lingkungan pengujian: Python 3.13.1. Paket dipatok di `requirements.txt`. Semua data untuk reproduksi tersedia lokal.
 
 ```bash
+git clone https://github.com/feboyfierlyan/mbg-safety-eda.git
+cd mbg-safety-eda
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
+python src/prepare_data.py
+python -m unittest discover -s tests -v
+python src/build_notebook.py
 python jalankan_ulang.py
 ```
 
-Pada Windows, ganti perintah aktivasi dengan `.venv\Scripts\activate`. Skrip menjalankan semua sel secara berurutan, menyimpan output notebook, dan membangun ulang HTML. Untuk mengedit interaktif, buka notebook dengan Jupyter atau VS Code lalu pilih kernel Python yang memiliki dependensi di atas.
+Pada Windows gunakan `.venv\Scripts\activate` untuk aktivasi. Skrip eksekusi memakai interpreter lingkungan aktif. `prepare_data.py` membaca snapshot yang disimpan, bukan halaman Wikipedia yang berubah setiap hari. Notebook memeriksa SHA-256 CSV. Skrip paper menggunakan dependensi tambahan pada `requirements-paper.txt`.
 
-CSV lokal tersedia di `data/`, sehingga eksekusi normal tidak membutuhkan unduhan dataset. Bila notebook dibuka sendirian, sel pemuatan menyediakan fallback unduhan resmi UCI. SHA-256 diperiksa sebelum analisis agar file yang dipakai konsisten.
-
-## Isi arsip
+## Struktur repositori
 
 ```text
-3224600051_Muhammad_Fierlyan_Irwandi_EDA.ipynb
-3224600051_Muhammad_Fierlyan_Irwandi_EDA.html
-PRESENTASI_3_MENIT.md
-README.md
-VALIDASI.md
-requirements.txt
-jalankan_ulang.py
-hasil_ringkas.json
-data/
-  winequality-red.csv
-  winequality.names
-  SUMBER_DATA.md
-figures/
-  01_histogram_alcohol.png
-  02_distribusi_quality.png
-  03_boxplot_alcohol_quality.png
-  04_scatter_alcohol_acidity.png
-  05_heatmap_korelasi.png
+data/raw/        Snapshot HTML dan hasil ekstraksi dengan referensi
+data/processed/  CSV, entri eksklusi, statistik dan sensitivitas
+data/provenance.json
+src/            Persiapan data dan pembangun notebook/paper
+tests/          Pemeriksaan parsing, sel gabungan, serta integritas data
+figures/        Lima grafik PNG
+docs/           Audit sumber, kamus data, dan validasi
 ```
 
-## Sumber dan atribusi
+## Rubrik tugas
 
-Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). *Wine Quality* [Dataset]. UCI Machine Learning Repository. [DOI: 10.24432/C56S3T](https://doi.org/10.24432/C56S3T). Lisensi dataset: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- [x] Minimal 100 baris data.
+- [x] `head`, `shape`, `info`, dan `describe`.
+- [x] Minimal tiga visualisasi; tersedia lima.
+- [x] Identifikasi fitur dan target.
+- [x] Lima insight beserta interpretasi.
+- [x] File NIM_Nama_EDA.ipynb dan versi HTML.
+- [x] Presentasi singkat, di bawah batas tiga menit pada kecepatan latihan yang disarankan.
 
-Publikasi sumber: *Modeling wine preferences by data mining from physicochemical properties*. Decision Support Systems, 47(4), 547–553. [DOI: 10.1016/j.dss.2009.05.016](https://doi.org/10.1016/j.dss.2009.05.016).
+## Sumber, lisensi, dan sitasi
 
-Instruksi tugas mengacu pada materi Riyanto Sigit, *Materi 04: Python dan Data Exploration untuk Machine Learning*, terutama slide 22. File perkuliahan asli tidak disalin ke repositori; arsip ini berisi hasil pengerjaan tugas.
+Kontributor Wikipedia. *Daftar kasus keracunan massal makan siang gratis*, [revisi 29876794](https://id.wikipedia.org/w/index.php?title=Daftar_kasus_keracunan_massal_makan_siang_gratis&oldid=29876794). Diakses 18 September 2026. Snapshot dan adaptasi data berlisensi **CC BY-SA 4.0**, dengan atribusi dan perubahan didokumentasikan pada [DATA_LICENSE.md](DATA_LICENSE.md). Hak cipta artikel yang dirujuk tetap pada penerbitnya; isi penuh artikel tersebut tidak disalin ke repositori.
+
+Kode Python asli berlisensi MIT. Untuk menyitir proyek ini gunakan metadata [CITATION.cff](CITATION.cff). Instruksi akademik mengacu pada materi Riyanto Sigit, *Materi 04: Python dan Data Exploration untuk Machine Learning*, slide 22.
+
+Riwayat revisi: versi 2.0 menggantikan kajian Wine Quality dengan MBG. Riwayat versi sebelumnya tetap tersimpan di Git.

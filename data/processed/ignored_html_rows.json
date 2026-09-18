@@ -1,0 +1,22 @@
+[
+  {
+    "row": 162,
+    "reason": "baris_lanjutan_atau_placeholder_tanpa_angka_dan_rujukan"
+  },
+  {
+    "row": 653,
+    "reason": "baris_lanjutan_atau_placeholder_tanpa_angka_dan_rujukan"
+  },
+  {
+    "row": 822,
+    "reason": "baris_lanjutan_atau_placeholder_tanpa_angka_dan_rujukan"
+  },
+  {
+    "row": 823,
+    "reason": "baris_lanjutan_atau_placeholder_tanpa_angka_dan_rujukan"
+  },
+  {
+    "row": 824,
+    "reason": "subtotal_sumber_tidak_dipakai"
+  }
+]
